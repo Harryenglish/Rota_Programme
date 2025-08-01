@@ -13,3 +13,9 @@ import pandas as pd
 
 
 
+df = pd.read_excel("rota data export (Responses).xlsx")
+
+
+# we have imported the data now we need to use a boolean system to know when shifts can be done and who it is that is available
+
+# then we make the schedular !!!
