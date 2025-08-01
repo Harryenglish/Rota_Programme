@@ -10,3 +10,6 @@ import pandas as pd
 # Check that all contraints are satisfied 
 # ^ (people get as many shifts as possible, maximum shifts are occupied, no shifts given twice, only one shift a day)
 # Eventually export the rota to a spreadsheet
+
+
+
