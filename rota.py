@@ -15,6 +15,11 @@ import pandas as pd
 
 df = pd.read_excel("rota data export (Responses).xlsx")
 
+class Employee:
+    for i in range(len(df['Name'])):
+        def __init__(self, name, availability):
+            self.name = df['Name'].iloc[i]
+
 
 # we have imported the data now we need to use a boolean system to know when shifts can be done and who it is that is available
 
