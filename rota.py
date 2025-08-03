@@ -15,10 +15,36 @@ import pandas as pd
 
 df = pd.read_excel("rota data export (Responses).xlsx")
 
+df.columns.values[1] = 'Name'
+
+# Toy data has been imported
+
+# Now we need a way of classifying every employee and their availability (by mapping 'yes' to True and 'no' to False)
+
 class Employee:
-    for i in range(len(df['Name'])):
-        def __init__(self, name, availability):
-            self.name = df['Name'].iloc[i]
+        '''
+        All that is gathered from the form is name and availability. So we will make this our object.
+        '''
+        def __init__(self, employee, availability):
+            self.employee = employee
+            self.availability = availability 
+            self.assigned = []
+
+employee = []
+
+
+# Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
+
+for i, row in df.iterrows():
+      name = row['Name']
+      employee.append(name)
+      for j, column in 
+
+            
+
+
+
+
 
 
 # we have imported the data now we need to use a boolean system to know when shifts can be done and who it is that is available
