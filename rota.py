@@ -16,6 +16,7 @@ import pandas as pd
 df = pd.read_excel("rota data export (Responses).xlsx")
 
 df.columns.values[1] = 'Name'
+del df[df.columns[0]]
 
 # Toy data has been imported
 
@@ -31,18 +32,32 @@ class Employee:
             self.assigned = []
 
 employee = []
-
+shift_columns = df.columns[1:]
 
 # Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
 
 for i, row in df.iterrows():
       name = row['Name']
       employee.append(name)
-      for j, column in 
+      availability = []
+      for col in shift_columns:
+            confirmed = row[col]
+            availability.append(confirmed.lower().strip() == "yes")
+      
+      emp = Employee(name, availability)
+      employee.append(emp)
 
-            
+      
 
+print(employee)
 
+# Check employee class is stored correctly
+
+# Do the schedular !!!
+
+# Store yes as true, no as false. 
+
+# Schedular next
 
 
 
