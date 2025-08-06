@@ -31,6 +31,9 @@ class Employee:
             self.availability = availability 
             self.assigned = []
 
+        def __repr__(self):
+            return f"Employee(name={self.employee}, availability={self.availability})"    
+
 employee = []
 shift_columns = df.columns[1:]
 
@@ -48,20 +51,19 @@ for i, row in df.iterrows():
       employee.append(emp)
 
       
+# for emp in employee:
+#     print(emp)
 
-print(employee)
 
-# Check employee class is stored correctly
+# Employee class complete
+
+
+
 
 # Do the schedular !!!
 
-# Store yes as true, no as false. 
 
-# Schedular next
-
+# Classify each morning, afternoon and evening shifts in the schedular
 
 
 
-# we have imported the data now we need to use a boolean system to know when shifts can be done and who it is that is available
-
-# then we make the schedular !!!
