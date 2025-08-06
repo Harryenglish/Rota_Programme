@@ -25,6 +25,8 @@ del df[df.columns[0]]
 class Employee:
         '''
         All that is gathered from the form is name and availability. So we will make this our object.
+
+        The purpose of this class is so we can access availability information as efficiently as possible.
         '''
         def __init__(self, employee, availability):
             self.employee = employee
@@ -67,3 +69,12 @@ for i, row in df.iterrows():
 
 
 
+class Schedular:
+      '''
+      Classify which shifts are morning, afternoon and evening. 
+      Check least available shifts to most.
+      Show which shifts havent been taken.
+      No shifts twice and maximum one a day.
+
+      Ultimately a constraint satisfaction problem.
+      '''
