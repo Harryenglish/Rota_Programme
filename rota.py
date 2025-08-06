@@ -72,10 +72,11 @@ for i, row in df.iterrows():
 class Schedular:
       '''
       Classify which shifts are morning, afternoon and evening. 
-      Check least available shifts to most.
+      Check least available shifts to most, and assign accordingly.
       Show which shifts havent been taken.
+      Show whos available but havent been assigned.
       No shifts twice and maximum one a day.
-
+      
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
       def __init__(self, ):
