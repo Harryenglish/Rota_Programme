@@ -76,5 +76,5 @@ class Schedular:
       Show which shifts havent been taken.
       No shifts twice and maximum one a day.
 
-      Ultimately a constraint satisfaction problem.
+      Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
