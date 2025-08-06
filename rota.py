@@ -78,3 +78,4 @@ class Schedular:
 
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
+      def __init__(self, ):
