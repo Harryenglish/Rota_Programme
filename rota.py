@@ -53,8 +53,8 @@ for i, row in df.iterrows():
       employee.append(emp)
 
       
-# for emp in employee:
-#     print(emp)
+
+# print(employee)
 
 
 # Employee class complete
@@ -62,21 +62,38 @@ for i, row in df.iterrows():
 
 
 
-# Do the schedular !!!
+
 
 
 # Classify each morning, afternoon and evening shifts in the schedular
 
+
+# classify validity of truth statements for morning afternoon and evening by sorting through in threes, then every 3 can be eligible for given shifts
+
+shifts = []
+
+for i in range(len(df.iloc[ 1, :, 1]) - 1):
+      
+      
+
+
+
+
+# Schedular class
 
 
 class Schedular:
       '''
       Classify which shifts are morning, afternoon and evening. 
       Check least available shifts to most, and assign accordingly.
+      No shifts twice and maximum one a day.
       Show which shifts havent been taken.
       Show whos available but havent been assigned.
-      No shifts twice and maximum one a day.
+      
       
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
-      def __init__(self, ):
+      def __init__(self, employee, shifts):
+           self.employee = employee
+           self.shifts = shifts
+           self.assigned = []
