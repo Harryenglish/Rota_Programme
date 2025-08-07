@@ -70,12 +70,25 @@ for i, row in df.iterrows():
 
 # classify validity of truth statements for morning afternoon and evening by sorting through in threes, then every 3 can be eligible for given shifts
 
-shifts = []
+def shift_classifier():
 
-for i in range(len(df.iloc[ 1, :, 1]) - 1):
-      
-      
+    shifts = []
 
+    for i in range(1, len(df.iloc[ 1, :]), 3):
+      
+     
+    for i in range(2, len(df.iloc[ 1, :]), 3):      
+        
+
+    for i in range(3, len(df.iloc[ 1, :]), 3):
+        
+    
+    return shifts
+
+
+# sort using if statements to sift for time of shift
+
+if len(df.iloc[1, :]) // 3
 
 
 
