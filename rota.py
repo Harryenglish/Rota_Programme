@@ -17,8 +17,18 @@ df = pd.read_excel("rota data export (Responses).xlsx")
 
 df.columns.values[1] = 'Name'
 del df[df.columns[0]]
+initial_columns = df.columns[1:]
 
-# Toy data has been imported
+for col in initial_columns:
+    for index, row in df.iterrows():
+        if str(row[col]).lower().strip() == "yes":
+            df.at[index, col] = True
+        else:
+             df.at[index, col] = False
+        
+
+
+# Toy data has been imported and normalised
 
 # Now we need a way of classifying every employee and their availability (by mapping 'yes' to True and 'no' to False)
 
@@ -43,11 +53,10 @@ shift_columns = df.columns[1:]
 
 for i, row in df.iterrows():
       name = row['Name']
-      employee.append(name)
       availability = []
       for col in shift_columns:
             confirmed = row[col]
-            availability.append(confirmed.lower().strip() == "yes")
+            availability.append(confirmed)     # Double check if this includes name column
       
       emp = Employee(name, availability)
       employee.append(emp)
@@ -70,26 +79,45 @@ for i, row in df.iterrows():
 
 # classify validity of truth statements for morning afternoon and evening by sorting through in threes, then every 3 can be eligible for given shifts
 
+# go through employee class, find name of each and store morning afternoon and evening data separately, like a subset of the class
+
 def shift_classifier():
 
-    shifts = []
+    morning_shifts = []
+    afternoon_shifts = []
+    evening_shifts = []
 
-    for i in range(1, len(df.iloc[ 1, :]), 3):
-      
-     
-    for i in range(2, len(df.iloc[ 1, :]), 3):      
-        
+    for i, row in df.iterrows():
+        names = row['Name']
+        morning_availability = []
+        for col in df.columns[1::3]:
+             morning_confirmed = row[col]
+             morning_availability.append(morning_confirmed)
 
-    for i in range(3, len(df.iloc[ 1, :]), 3):
-        
+        morning_shifts.append((names, morning_availability))
     
-    return shifts
+    for j, row in df.iterrows():
+        names = row['Name']
+        afternoon_availability = []
+        for col in df.columns[2::3]:
+             afternoon_confirmed = row[col]
+             afternoon_availability.append(afternoon_confirmed)
+
+        afternoon_shifts.append((names, afternoon_availability))
+
+    for k, row in df.iterrows():
+        names = row['Name']
+        evening_availability = []
+        for col in df.columns[3::3]:
+             evening_confirmed = row[col]
+             evening_availability.append(evening_confirmed)
+
+        evening_shifts.append((names, evening_availability))    
+
+    return morning_shifts, afternoon_shifts, evening_shifts
 
 
-# sort using if statements to sift for time of shift
-
-if len(df.iloc[1, :]) // 3
-
+# test = print(shift_classifier())
 
 
 # Schedular class
@@ -106,7 +134,9 @@ class Schedular:
       
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
-      def __init__(self, employee, shifts):
+      def __init__(self, employee, morning_shifts, afternoon_shifts, evening_shifts):
            self.employee = employee
-           self.shifts = shifts
+           self.morning_shifts = morning_shifts
+           self.afternoon_shifts = afternoon_shifts
+           self.evening_shifts = evening_shifts
            self.assigned = []
