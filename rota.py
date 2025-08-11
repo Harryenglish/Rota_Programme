@@ -120,7 +120,6 @@ def shift_classifier():
 # test = print(shift_classifier())
 
 
-
 # Schedular class
 
 
@@ -149,4 +148,42 @@ class Scheduler:
         self.assigned = []
 
       def Scheduling(self, employees, morning_shifts, afternoon_shifts, evening_shifts):
-           return self 
+        '''
+        For each day tally morning, afternoon and evening availability
+        Assign shifts from least to most availability
+        Do this for every day
+        First come first serve basis
+
+        Show which shifts arent filled
+        Maximum one shift per day
+        One shift given out once
+        '''   
+        for j in range(7):
+            for i in range(len(df['Name'])):
+                morning_tally = 0
+                afternoon_tally = 0
+                evening_tally = 0
+                if morning_shifts[i][1][j] == True:
+                    morning_tally += 1
+                if afternoon_shifts[i][1][j] == True:
+                    afternoon_tally += 1
+                if evening_shifts[i][1][j] == True:
+                    evening_tally += 1
+
+                tallies = [(morning_shifts, morning_tally),
+                           (afternoon_shifts, afternoon_tally),
+                           (evening_shifts, evening_tally)]
+
+                sorted_tallies = sorted(tallies, key=lambda x: x[1])
+
+                (min_var, min_val), (mid_var, mid_val), (max_var, max_val) = sorted_tallies
+
+
+                # find out what min val is and schedule according to required shifts, then no twice, no doubles, print untaken 
+
+
+
+
+        return self 
+        
+
