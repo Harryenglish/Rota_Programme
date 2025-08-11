@@ -30,7 +30,7 @@ for col in initial_columns:
 
 # Toy data has been imported and normalised
 
-# Now we need a way of classifying every employee and their availability (by mapping 'yes' to True and 'no' to False)
+# Now we need a way of classifying every employee and their availability 
 
 class Employee:
         '''
@@ -46,7 +46,7 @@ class Employee:
         def __repr__(self):
             return f"Employee(name={self.employee}, availability={self.availability})"    
 
-employee = []
+employees = []
 shift_columns = df.columns[1:]
 
 # Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
@@ -56,14 +56,14 @@ for i, row in df.iterrows():
       availability = []
       for col in shift_columns:
             confirmed = row[col]
-            availability.append(confirmed)     # Double check if this includes name column
+            availability.append(confirmed)     
       
       emp = Employee(name, availability)
-      employee.append(emp)
+      employees.append(emp)
 
       
 
-# print(employee)
+# print(employees)
 
 
 # Employee class complete
@@ -123,7 +123,7 @@ def shift_classifier():
 # Schedular class
 
 
-class Schedular:
+class Scheduler:
       '''
       Classify which shifts are morning, afternoon and evening. 
       Check least available shifts to most, and assign accordingly.
@@ -134,8 +134,8 @@ class Schedular:
       
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
-      def __init__(self, employee, morning_shifts, afternoon_shifts, evening_shifts):
-           self.employee = employee
+      def __init__(self, employees, morning_shifts, afternoon_shifts, evening_shifts):
+           self.employees = employees
            self.morning_shifts = morning_shifts
            self.afternoon_shifts = afternoon_shifts
            self.evening_shifts = evening_shifts
