@@ -120,6 +120,7 @@ def shift_classifier():
 # test = print(shift_classifier())
 
 
+
 # Schedular class
 
 
@@ -134,9 +135,18 @@ class Scheduler:
       
       Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
       '''
+
+      morning_required = ["7:00 - 13:00", "8:00 - 13:00", "9:00 - 17:00", "10:00 - 18:00"]
+      afternoon_required = ["12:00 - 22:00", "14:00 - 23:00", "16:00 - 00:00"]
+      evening_required = ["17:00 - 00:00", "17:00 - 01:00"]
+      department = ["W Lounge", "Sushisamba"]
+
       def __init__(self, employees, morning_shifts, afternoon_shifts, evening_shifts):
-           self.employees = employees
-           self.morning_shifts = morning_shifts
-           self.afternoon_shifts = afternoon_shifts
-           self.evening_shifts = evening_shifts
-           self.assigned = []
+        self.employees = employees
+        self.morning_shifts = morning_shifts
+        self.afternoon_shifts = afternoon_shifts
+        self.evening_shifts = evening_shifts
+        self.assigned = []
+
+      def Scheduling(self, employees, morning_shifts, afternoon_shifts, evening_shifts):
+           return self 
