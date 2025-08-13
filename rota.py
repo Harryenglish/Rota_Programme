@@ -143,6 +143,7 @@ class Scheduler:
       afternoon_required = ["16:00 - 00:00", "12:00 - 22:00", "14:00 - 23:00"]
       evening_required = ["17:00 - 01:00", "17:00 - 00:00"]
 
+
       def __init__(self, morning_shifts, afternoon_shifts, evening_shifts):
         self.morning_shifts = morning_shifts
         self.afternoon_shifts = afternoon_shifts
@@ -159,8 +160,13 @@ class Scheduler:
         Show which shifts arent filled
         Maximum one shift per day
         One shift given out once
-        '''   
+        '''
+        all_assigned = []
+
         for j in range(7):
+
+            all_assigned.append(f"Day {j + 1}")
+
             for i in range(len(df['Name'])):
                 morning_tally = 0
                 afternoon_tally = 0
@@ -185,85 +191,115 @@ class Scheduler:
 
             # make a function for most important period, pass in min_val, and use important_period as variable, same for middle and most  
 
-            def highest_priority_period(min_var):
+            for i in range(len(df['Name'])):
             
-                available_employees = []
-                # loop through morning shifts and acquire the name for what index is true
-                if min_var[i][1][j] == True:
-                    available_employees.append(min_var[i][0])
+                def highest_priority_period(min_var):
+            
+                    available_employees = []
+                    # loop through morning shifts and acquire the name for what index is true
+                    if min_var[i][1][j] == True:
+                        available_employees.append(min_var[i][0])
 
-                if len(available_employees) < len(most_important_period):
-                    available_employees.extend(["N/A"] * (len(most_important_period) - len(available_employees)))
+                    if len(available_employees) < len(most_important_period):
+                        available_employees.extend(["N/A"] * (len(most_important_period) - len(available_employees)))
+
+                    assigned_for_this_period = list(zip(available_employees[:len(most_important_period)], most_important_period))
+                    assigned.extend(assigned_for_this_period)
+
+                    for emp, shift in assigned_for_this_period:
+                        if emp == "N/A":
+                            print(f"On day {j+1} the shift {shift} has nobody to take it.")    
                 
-                assigned.append((available_employees[:len(most_important_period)], most_important_period))
+                #assigned.append((available_employees[:len(most_important_period)], most_important_period))
 
-                for k in range(len(most_important_period)):
-                    if assigned[k][0] == "N/A":
-                        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
+                #for k in range(len(most_important_period)):
+                #   if assigned[k][0] == "N/A":
+                #        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
 
-                if min_var[i:len(most_important_period)][1][j] == True:                    
-                    min_var[i:len(most_important_period)][1][j], mid_var[i:len(most_important_period)][1][j], max_var[i:len(most_important_period)][1][j] = False
+                    if min_var[i][1][j] == True:                    
+                        min_var[i][1][j] = False
+                        mid_var[i][1][j] = False 
+                        max_var[i][1][j] = False
 
-                
-                return assigned
+                    return assigned
             
-            def middle_priority_period(mid_var):
-
-                available_employees = []
-
-                if mid_var[i][1][j] == True:
-                    available_employees.append(mid_var[i][0])
-
-                if len(available_employees) < len(middle_important_period):
-                    available_employees.extend(["N/A"] * (len(middle_important_period) - len(available_employees)))
-
-                assigned.append((available_employees[:len(middle_important_period)], middle_important_period))
-
-                for k in range(len(middle_important_period)):
-                    if assigned[k][0] == "N/A":
-                        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
-
-                if mid_var[i:len(middle_important_period)][1][j] == True:
-                    mid_var[i:len(middle_important_period)][1][j], max_var[i:len(middle_important_period)][1][j] = False
-
-                return assigned
+                all_assigned.append(highest_priority_period(min_var))
             
-            def least_priority_period(max_var):
+                def middle_priority_period(mid_var):
 
-                available_employees = []
+                    available_employees = []
 
-                if max_var[i][1][j] == True:
-                    available_employees.append(max_var[i][0])
+                    if mid_var[i][1][j] == True:
+                        available_employees.append(mid_var[i][0])
 
-                if len(available_employees) < len(least_important_period):
-                    available_employees.extend(["N/A"] * (len(least_important_period) - len(available_employees)))
+                    if len(available_employees) < len(middle_important_period):
+                        available_employees.extend(["N/A"] * (len(middle_important_period) - len(available_employees)))
 
-                assigned.append((available_employees[:len(least_important_period)], least_important_period))
+                    assigned_for_this_period = list(zip(available_employees[:len(middle_important_period)], middle_important_period))
+                    assigned.extend(assigned_for_this_period)
 
-                for k in range(len(least_important_period)):
-                    if assigned[k][0] == "N/A":
-                        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
+                    for emp, shift in assigned_for_this_period:
+                        if emp == "N/A":
+                            print(f"On day {j+1} the shift {shift} has nobody to take it.")    
 
-                if max_var[i:len(least_important_period)][1][j] == True:
-                    max_var[i:len(least_important_period)][1][j] = False
+                #assigned.append((available_employees[:len(middle_important_period)], middle_important_period))
 
-                free_employees = []
-                if min_var[i][1][j] == True:
-                    free_employees.append((min_var[i][0], "Highest priority period"))
-                if mid_var[i][1][j] == True:
-                    free_employees.append((mid_var[i][0]), "Middle priority period")
-                if max_var[i][1][j] == True:
-                    free_employees.append((max_var[i][0]), "Lowest priority period")
+                #for k in range(len(middle_important_period)):
+                #    if assigned[k][0] == "N/A":
+                #        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
+
+                    if mid_var[i][1][j] == True:
+                        mid_var[i][1][j] = False
+                        max_var[i][1][j] = False
+               
+                    return assigned
+            
+                all_assigned.append(middle_priority_period(mid_var))    
+
+                def least_priority_period(max_var):
+
+                    available_employees = []
+
+                    if max_var[i][1][j] == True:
+                        available_employees.append(max_var[i][0])
+
+                    if len(available_employees) < len(least_important_period):
+                        available_employees.extend(["N/A"] * (len(least_important_period) - len(available_employees)))
+
+                    assigned_for_this_period = list(zip(available_employees[:len(least_important_period)], least_important_period))
+                    assigned.extend(assigned_for_this_period)
+
+                    for emp, shift in assigned_for_this_period:
+                        if emp == "N/A":
+                            print(f"On day {j+1} the shift {shift} has nobody to take it.")      
+
+                #assigned.append((available_employees[:len(least_important_period)], least_important_period))
+
+                #for k in range(len(least_important_period)):
+                #    if assigned[k][0] == "N/A":
+                #        print(f"On day {j} the shift {assigned[k][1]} has nobody to take it.")
+
+                    if max_var[i][1][j] == True:
+                        max_var[i][1][j] = False
+
+                    free_employees = []
+                    if min_var[i][1][j] == True:
+                        free_employees.append((min_var[i][0], "Highest priority period"))
+                    if mid_var[i][1][j] == True:
+                        free_employees.append((mid_var[i][0], "Middle priority period"))
+                    if max_var[i][1][j] == True:
+                        free_employees.append((max_var[i][0], "Lowest priority period"))
                     
-                if free_employees != 0:
-                    print(f"The employees that have not been assigned shifts are {free_employees}")
-
-
-                return assigned 
+                    if free_employees != 0:
+                        print(f"The employees that have not been assigned shifts are {free_employees}")
+    
+                    return assigned 
+            
+                all_assigned.append(least_priority_period(max_var))
                  
-        return assigned  # assigned is 7 times one thing
+            return all_assigned  # assigned is a schedular for one day, done for all 7
       
-      def Exporter(assigned):
+      def Exporter(self, all_assigned):
           '''
           This method will be in charge of exporting the rota into a viewable format
 
@@ -272,15 +308,39 @@ class Scheduler:
           rota = []
 
           for i in range(len(df['Name'])):     #  figure out how assigned list is structured and map to department
-              if assigned[i][1] == "10:00 - 18:00" or assigned[i][1] == "12:00 - 22:00" or assigned[i][1] == "14:00 - 23:00" or assigned[i][1] == "17:00 - 01:00":
-                  rota.append(())
-
+              if assigned[i][1] == "10:00 - 18:00":
+                  assigned[i].append("W Lounge")
+              elif assigned[i][1] == "12:00 - 22:00":
+                  assigned[i].append("W Lounge")
+              elif assigned[i][1] == "14:00 - 23:00":
+                  assigned[i].append("W Lounge")
+              elif assigned[i][1] == "17:00 - 01:00":
+                  assigned[i].append("W Lounge")
+              else:
+                  assigned[i].append("Sushisamba")
                   # add assigned shifts and department to rota list, then make spredsheet from rota list  
               
           
           return rota
         
 
-# apparatus = Scheduler(morning_shifts, afternoon_shifts, evening_shifts)
 
-# apparatus.Scheduling
+
+apparatus = Scheduler(morning_shifts, afternoon_shifts, evening_shifts)
+
+assigned = apparatus.Scheduling(
+    morning_shifts,
+    afternoon_shifts,
+    evening_shifts,
+    Scheduler.morning_required,
+    Scheduler.afternoon_required,
+    Scheduler.evening_required
+)
+
+# print(assigned)
+
+
+assigned = apparatus.Scheduling(morning_shifts, afternoon_shifts, evening_shifts, 
+                                 Scheduler.morning_required, Scheduler.afternoon_required, Scheduler.evening_required)
+
+print(assigned)
