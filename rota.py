@@ -307,16 +307,16 @@ class Scheduler:
           rota = []
 
           for i in range(len(df['Name'])):     #  figure out how assigned list is structured and map to department
-              if assigned[i][1] == "10:00 - 18:00":
-                  assigned[i].append("W Lounge")
-              elif assigned[i][1] == "12:00 - 22:00":
-                  assigned[i].append("W Lounge")
-              elif assigned[i][1] == "14:00 - 23:00":
-                  assigned[i].append("W Lounge")
-              elif assigned[i][1] == "17:00 - 01:00":
-                  assigned[i].append("W Lounge")
+              if all_assigned[i][1] == "10:00 - 18:00":
+                  all_assigned[i].append("W Lounge")
+              elif all_assigned[i][1] == "12:00 - 22:00":
+                  all_assigned[i].append("W Lounge")
+              elif all_assigned[i][1] == "14:00 - 23:00":
+                  all_assigned[i].append("W Lounge")
+              elif all_assigned[i][1] == "17:00 - 01:00":
+                  all_assigned[i].append("W Lounge")
               else:
-                  assigned[i].append("Sushisamba")
+                  all_assigned[i].append("Sushisamba")
                   # add assigned shifts and department to rota list, then make spredsheet from rota list  
               
           
