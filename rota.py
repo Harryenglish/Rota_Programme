@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 
@@ -66,7 +65,7 @@ for i, row in df.iterrows():
 
       
 
-# print(employees)
+print(employees)
 
 
 # Employee class complete
@@ -328,19 +327,11 @@ class Scheduler:
 
 apparatus = Scheduler(morning_shifts, afternoon_shifts, evening_shifts)
 
-assigned = apparatus.Scheduling(
-    morning_shifts,
-    afternoon_shifts,
-    evening_shifts,
-    Scheduler.morning_required,
-    Scheduler.afternoon_required,
-    Scheduler.evening_required
-)
 
 # print(assigned)
 
 
-assigned = apparatus.Scheduling(morning_shifts, afternoon_shifts, evening_shifts, 
-                                 Scheduler.morning_required, Scheduler.afternoon_required, Scheduler.evening_required)
+#assigned = apparatus.Scheduling(morning_shifts, afternoon_shifts, evening_shifts, 
+#                                 Scheduler.morning_required, Scheduler.afternoon_required, Scheduler.evening_required)
 
-print(assigned)
+# print(assigned)
