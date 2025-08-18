@@ -224,4 +224,9 @@ for day, depts in schedule_dict.items():
 df_schedule = pd.DataFrame(rows)
 
 # Save to Excel
-df_schedule.to_excel("rota_schedule.xlsx", index=False)
+# df_schedule.to_excel("rota_schedule.xlsx", index=False)
+
+
+
+
+# go through all classes and fix everything
