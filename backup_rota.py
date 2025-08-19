@@ -223,6 +223,8 @@ for day, depts in schedule_dict.items():
 
 df_schedule = pd.DataFrame(rows)
 
+print(df_schedule)
+
 # Save to Excel
 # df_schedule.to_excel("rota_schedule.xlsx", index=False)
 
@@ -230,3 +232,9 @@ df_schedule = pd.DataFrame(rows)
 
 
 # go through all classes and fix everything
+
+
+
+# employee class holds all employee info, name, availability, what shifts theyve been assigned
+# shifts class holds all shift info, department, what period maps to what shift time, time, whos doing it, day
+# scheduler class is main csp solver, maximising shifts assigned and giving out shifts as evenly as possible
