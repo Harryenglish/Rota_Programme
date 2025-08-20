@@ -5,14 +5,30 @@ import pandas as pd
 DAYS = ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
 PERIODS = ["Morning", "Afternoon", "Evening"]
 
+morning_required = ["7:00 - 13:00", "10:00 - 18:00", "8:00 - 13:00", "9:00 - 17:00"]
+afternoon_required = ["16:00 - 00:00", "12:00 - 22:00", "14:00 - 23:00"]
+evening_required = ["17:00 - 01:00", "17:00 - 00:00"]
+
+department_mapping = {
+    "7:00 - 13:00": "Sushisamba",
+    "10:00 - 18:00": "W Lounge",
+    "8:00 - 13:00": "Sushisamba",
+    "12:00 - 22:00": "W Lounge",
+    "9:00 - 17:00": "Sushisamba",
+    "14:00 - 23:00": "W Lounge",
+    "16:00 - 00:00": "Sushisamba",
+    "17:00 - 01:00": "W Lounge",
+    "17:00 - 00:00": "Sushisamba"}
+
 # Creating an index for a shift dictionary
 
 index_to_label = {
     i: (day, period)
     for day_index, day in enumerate(DAYS)
     for period_index, period in enumerate(PERIODS)
-    for i in [day_index * len(PERIODS) + period_index]
-}
+    for i in [day_index * len(PERIODS) + period_index]}
+
+
 
 
 # Importing the google form as excel sheet
@@ -52,6 +68,11 @@ class Employee:
             for i, available in enumerate(availability_flat)}
         self.assigned = []
 
+# happy with above in class
+
+
+
+
     def is_available_for(self, day, period):              # Revise
         # Check if employee is available for this shift AND hasn't already been assigned today
         available_today = self.count_assigned_on(day) < 1
@@ -68,6 +89,10 @@ class Employee:
 
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
+    
+
+
+
 
 employees = []
 shift_columns = df.columns[1:]
@@ -89,7 +114,12 @@ for i, row in df.iterrows():
 # print(employees)
 
 
-# Employee class complete
+
+
+
+
+
+# Shifts class
 
 class Shift:
     '''
@@ -97,10 +127,7 @@ class Shift:
 
     Contains info on the shift period, time, department and day
     Mark a shift assigned/not assigned
-    If a shift has nobody to fill it 
-    What period maps to what shifts
-    What shift is what department
-    Shift catalogue ?
+    If a shift has nobody to fill it, show
     '''
     def __init__(self, period, time_range, department, day):
         self.period = period 
@@ -108,43 +135,34 @@ class Shift:
         self.department = department
         self.day = day
         self.assigned = []
-        self.unassignable = False
 
     def __repr__(self):
         return f"Shift({self.period}, {self.time_range}, dept={self.department}, assigned={self.assigned})"
     
-    def status(self):
-        print(self.assigned)
-    
-morning_required = ["7:00 - 13:00", "10:00 - 18:00", "8:00 - 13:00", "9:00 - 17:00"]
-afternoon_required = ["16:00 - 00:00", "12:00 - 22:00", "14:00 - 23:00"]
-evening_required = ["17:00 - 01:00", "17:00 - 00:00"]
 
-department_mapping = {
-    "7:00 - 13:00": "Sushisamba",
-    "10:00 - 18:00": "W Lounge",
-    "8:00 - 13:00": "Sushisamba",
-    "12:00 - 22:00": "W Lounge",
-    "9:00 - 17:00": "Sushisamba",
-    "14:00 - 23:00": "W Lounge",
-    "16:00 - 00:00": "Sushisamba",
-    "17:00 - 01:00": "W Lounge",
-    "17:00 - 00:00": "Sushisamba"
-}
 
-all_shifts = []
 
-for day in DAYS:
-    for time in morning_required:
-        all_shifts.append(Shift("morning", time, department_mapping[time], day))
-    for time in afternoon_required:
-        all_shifts.append(Shift("afternoon", time, department_mapping[time], day))
-    for time in evening_required:
-        all_shifts.append(Shift("evening", time, department_mapping[time], day))
+def shift_dictionary():    
+    all_shifts = []
+    index_to_label = {}
+
+    i = 0 
+    for day in DAYS:
+        for period, times in zip(PERIODS, [morning_required, afternoon_required, evening_required]):
+            for time in times:
+                shift = Shift(period, time, department_mapping[time], day)
+                all_shifts.append(shift)
+                index_to_label[i] = (day, period, time, department_mapping[time])
+                i += 1
+
+    return all_shifts, index_to_label
+
+all_shifts, index_to_label = shift_dictionary()
 
 # print(all_shifts)
+# print(index_to_label)
 
-# Shift class complete
+
 
 
 
@@ -154,52 +172,26 @@ for day in DAYS:
 
 class Scheduler:
       '''
-      Check least available shifts to most, and assign accordingly.
-      No shifts twice and maximum one a day.
-      Show which shifts havent been taken.
-      Show whos available but havent been assigned.
-      
-      
-      Ultimately a constraint satisfaction problem. Backtracking with Heuristics.
+      The Scheduler class will be in charge of finding people for a shift
+
+      It will use backtracking with heuristics
+      Searching for most constrained shift and assigning least assigned available employee
       '''
       def __init__(self, employees, all_shifts):
         self.employees = employees
         self.all_shifts = all_shifts
 
       def Scheduling(self):
-        sorted_shifts = sorted(enumerate(self.all_shifts),key=lambda x: self.count_available(x[1], x[0]))
-
-        for shift_index, shift in enumerate([s for i, s in sorted_shifts]):
-            candidates = self.get_candidates(shift)
-            if not candidates:
-                shift.unassignable = True
-                continue
-
-            employee = min(candidates, key=lambda e: len(e.assigned))
-            shift.assigned.append(employee)
-            employee.assigned.append(shift)
-
-            for e in candidates:
-                if e != employee:
-                    e.mark_unassigned(shift)
+          assign = []
+          return assign
+        
+        
 
       def get_candidates(self, shift):
         return [e for e in self.employees if e.is_available_for(shift.day, shift.period)]
 
       def count_available(self, shift, shift_index):
         return len(self.get_candidates(shift))
-      
-      
-      
-      
-              
-        
-# scheduling class need method for heuristics, scheduling from most constrained
-# least assigned employee, no shifts for one person twice in one day
-
-# shifts need attribute that show if nobody can take it
-
-# employee needs attribute that shows if they are available but not been assigned
 
 
 
@@ -238,27 +230,3 @@ df_schedule = pd.DataFrame(rows)
 
 # Save to Excel
 # df_schedule.to_excel("rota_schedule.xlsx", index=False)
-
-
-
-
-# go through all classes and fix everything
-
-
-
-# employee class holds all employee info, name, availability, what shifts theyve been assigned
-# shifts class holds all shift info, department, what period maps to what shift time, time, whos doing it, day
-# scheduler class is main csp solver, maximising shifts assigned and giving out shifts as evenly as possible
-
-
-# employee class holds name, availability, if they can work in a certain day
-# if they have work then unavailable for the rest of the day and what shifts theyve been assigned
-# also show a list of all people who are eligible for work but havent been assigned in their period
-
-# shifts class holds shift time, department, which periods the shift time is, whos doing it, day
-# if its not been assigned to anyone, assign max two people to each shift, 
-
-# scheduler class has the csp solver of assigning to most constrained first and least assigned employee 
-# checking with employee class if employee is eligible to work in that period
-
-# save to excel in nice format (jordan rota format)
