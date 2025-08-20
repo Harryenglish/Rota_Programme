@@ -58,8 +58,9 @@ class Employee:
     It will be able to see what shifts someone is available for
     Assign and unassign shifts (one shift a day)
     Check how many shifts a person has throughout the scheduling process
+    Check if someone has a shift on a given day
     Show what availability a person has after the scheduling process 
-    No clopens!!!
+    Mark unavailable for clopens
     '''
     def __init__(self, name, availability_flat):
         self.name = name
@@ -68,54 +69,53 @@ class Employee:
             for i, available in enumerate(availability_flat)}
         self.assigned = []
 
-# happy with above in class
+    def is_available(self, day, period):
+        '''
+        Check if this employee is available in a given day and period
+        '''
+        return self.availability.get((day, period), False)
+    
+    def available_employees(employees, day, period):
+        '''
+        Return names of employees available in a given day and period
+        '''
+        return [emp.name for emp in employees if emp.is_available(day, period)]
+        
 
-
-
-
-    def is_available_for(self, day, period):              # Revise
-        # Check if employee is available for this shift AND hasn't already been assigned today
-        available_today = self.count_assigned_on(day) < 1
-        return (day, period) in self.availability and available_today
-
-    def count_assigned_on(self, day):                  # Revise         
-        # Count how many shifts already assigned on this day
-        return sum(1 for shift in self.assigned if shift.day == day)
-
-    def mark_unassigned(self, shift):              # Revise
-        # Optional: remove shift from assigned if needed
-        if shift in self.assigned:
-            self.assigned.remove(shift)
 
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
     
 
 
+def employee_dictionary():
+
+    employees = []
+    shift_columns = df.columns[1:]
+
+    # Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
+
+    for i, row in df.iterrows():
+        name = row['Name']
+        availability = []
+        for col in shift_columns:
+            confirmed = row[col]
+            availability.append(confirmed)     
+        
+        emp = Employee(name, availability)
+        employees.append(emp)
+
+    return employees    
+
+employees = employee_dictionary()
+
+# print(employees)
 
 
-employees = []
-shift_columns = df.columns[1:]
+# We can now find the availability of people on a given period
 
-# Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
-
-for i, row in df.iterrows():
-    name = row['Name']
-    availability = []
-    for col in shift_columns:
-        confirmed = row[col]
-        availability.append(confirmed)     
-      
-    emp = Employee(name, availability)
-    employees.append(emp)
-
-      
-
-# print(employees)
-
-
-
-
+# yes = Employee.available_employees(employees, "Saturday", "Evening")
+# print(yes)
 
 
 
@@ -126,7 +126,9 @@ class Shift:
     This class concerns everything to do with the shifts themselves
 
     Contains info on the shift period, time, department and day
-    Mark a shift assigned/not assigned
+    Mark a shift assigned 
+    Mark a shift not assigned
+    Check if a shift has someone assigned
     If a shift has nobody to fill it, show
     '''
     def __init__(self, period, time_range, department, day):
@@ -135,6 +137,7 @@ class Shift:
         self.department = department
         self.day = day
         self.assigned = []
+        self.unassignable = False
 
     def __repr__(self):
         return f"Shift({self.period}, {self.time_range}, dept={self.department}, assigned={self.assigned})"
@@ -174,59 +177,56 @@ class Scheduler:
       '''
       The Scheduler class will be in charge of finding people for a shift
 
-      It will use backtracking with heuristics
-      Searching for most constrained shift and assigning least assigned available employee
+      It will use backtracking with heuristics to schedule shifts
+      Finds most constrained shift 
+      Access employee and shifts data
+      Finds least assigned person
+      Access methods in employee and shift classes to mark shifts assigned
+      And to mark a shift not assigned
+      Check if a shift has anyone assigned to it
+      If a shift has nobody to fill it do backtracking once, if fail then mark unassigned
       '''
       def __init__(self, employees, all_shifts):
         self.employees = employees
         self.all_shifts = all_shifts
 
-      def Scheduling(self):
-          assign = []
-          return assign
-        
-        
+      def most_constrained(self):
+          constrained_by_day = []
 
-      def get_candidates(self, shift):
-        return [e for e in self.employees if e.is_available_for(shift.day, shift.period)]
+          for day in DAYS:
+              morning_count = 0
+              afternoon_count = 0
+              evening_count = 0
+              for emp in employees:                
+                  if emp.availability[(day, "Morning")] == True:
+                      morning_count += 1
+                  if emp.availability[(day, "Afternoon")] == True:
+                      afternoon_count += 1
+                  if emp.availability[(day, "Evening")] == True:
+                      evening_count += 1
 
-      def count_available(self, shift, shift_index):
-        return len(self.get_candidates(shift))
+              counts = [morning_count, afternoon_count, evening_count]
+              period_count = list(zip(counts, PERIODS))
+              sorted_count = sorted(period_count)
+
+              constrained_by_day.append(sorted_count)    
+
+          return constrained_by_day
+      
+      def get_least_assigned():
+          
+
+
+
+          return least_assigned_employee
 
 
 
 
+#rota = Scheduler(employees, all_shifts)
+#print(rota.most_constrained())
 
 
 
 
-schedule_dict = {}
-
-for shift in all_shifts:
-    day = shift.day
-    dept = shift.department
-    if day not in schedule_dict:
-        schedule_dict[day] = {}
-    if dept not in schedule_dict[day]:
-        schedule_dict[day][dept] = []
-    schedule_dict[day][dept].append(shift)
-
-# Flatten into rows for a DataFrame
-rows = []
-for day, depts in schedule_dict.items():
-    for dept, shifts in depts.items():
-        for shift in shifts:
-            rows.append({
-                "Day": day,
-                "Department": dept,
-                "Period": shift.period,
-                "Time": shift.time_range,
-                "Assigned": ", ".join([e.employee for e in shift.assigned]) or "Unassigned"
-            })
-
-df_schedule = pd.DataFrame(rows)
-
-# print(df_schedule)
-
-# Save to Excel
-# df_schedule.to_excel("rota_schedule.xlsx", index=False)
+# find the least assigned person as a method in scheduler and start scheduling that period from there !
