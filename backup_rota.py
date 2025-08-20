@@ -1,23 +1,11 @@
 import pandas as pd
 
-
-# any magic numbers must be declared 
-
-# We need to get some initial data
-
-# Create new data frame with 23 entries
-
-
-# Import the data from a google form and bring it into a data frame
-# First take the data, find each employee and their availability
-# Then assign shifts based off availability using the schedular
-# Check that all contraints are satisfied 
-# ^ (people get as many shifts as possible, maximum shifts are occupied, no shifts given twice, only one shift a day)
-# Eventually export the rota to a spreadsheet
-
+# Work week starts on Friday and staff can only give availability as morning, afternoon and evening for each day
 
 DAYS = ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
 PERIODS = ["Morning", "Afternoon", "Evening"]
+
+# Creating an index for a shift dictionary
 
 index_to_label = {
     i: (day, period)
@@ -27,7 +15,11 @@ index_to_label = {
 }
 
 
+# Importing the google form as excel sheet
+
 df = pd.read_excel("test.xlsx")
+
+# Removing timestamp column, changing Name column name, changing yes and no string to boolean
 
 df.columns.values[1] = 'Name'
 del df[df.columns[0]]
@@ -39,34 +31,43 @@ for col in initial_columns:
             df.at[index, col] = True
         else:
              df.at[index, col] = False
-        
-
-
-# Toy data has been imported and normalised
-
-# Now we need a way of classifying every employee and their availability 
+    
+# Employee class
 
 class Employee:
-    def __init__(self, name, availability):
+    '''
+    This class concerns the state of all employees
+
+    Employee class has properties - name, availability and assigned shifts
+    It will be able to see what shifts someone is available for
+    Assign and unassign shifts (one shift a day)
+    Check how many shifts a person has throughout the scheduling process
+    Show what availability a person has after the scheduling process 
+    No clopens!!!
+    '''
+    def __init__(self, name, availability_flat):
         self.name = name
-        # availability is a list of tuples: (day, period)
-        # e.g., [('Monday', 'morning'), ('Tuesday', 'evening')]
-        self.availability = availability  
+        self.availability = {
+            index_to_label[i]: available
+            for i, available in enumerate(availability_flat)}
         self.assigned = []
 
-    def is_available_for(self, day, period):
+    def is_available_for(self, day, period):              # Revise
         # Check if employee is available for this shift AND hasn't already been assigned today
         available_today = self.count_assigned_on(day) < 1
         return (day, period) in self.availability and available_today
 
-    def count_assigned_on(self, day):
+    def count_assigned_on(self, day):                  # Revise         
         # Count how many shifts already assigned on this day
         return sum(1 for shift in self.assigned if shift.day == day)
 
-    def mark_unassigned(self, shift):
+    def mark_unassigned(self, shift):              # Revise
         # Optional: remove shift from assigned if needed
         if shift in self.assigned:
             self.assigned.remove(shift)
+
+    def __repr__(self):
+        return f"Employee(Name = {self.name}, Availability = {self.availability})"
 
 employees = []
 shift_columns = df.columns[1:]
@@ -74,23 +75,33 @@ shift_columns = df.columns[1:]
 # Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
 
 for i, row in df.iterrows():
-      name = row['Name']
-      availability = []
-      for col in shift_columns:
-            confirmed = row[col]
-            availability.append(confirmed)     
+    name = row['Name']
+    availability = []
+    for col in shift_columns:
+        confirmed = row[col]
+        availability.append(confirmed)     
       
-      emp = Employee(name, availability)
-      employees.append(emp)
+    emp = Employee(name, availability)
+    employees.append(emp)
 
       
 
-# print(employees)
+# print(employees)
 
 
 # Employee class complete
 
 class Shift:
+    '''
+    This class concerns everything to do with the shifts themselves
+
+    Contains info on the shift period, time, department and day
+    Mark a shift assigned/not assigned
+    If a shift has nobody to fill it 
+    What period maps to what shifts
+    What shift is what department
+    Shift catalogue ?
+    '''
     def __init__(self, period, time_range, department, day):
         self.period = period 
         self.time_range = time_range
@@ -223,7 +234,7 @@ for day, depts in schedule_dict.items():
 
 df_schedule = pd.DataFrame(rows)
 
-print(df_schedule)
+# print(df_schedule)
 
 # Save to Excel
 # df_schedule.to_excel("rota_schedule.xlsx", index=False)
@@ -238,3 +249,16 @@ print(df_schedule)
 # employee class holds all employee info, name, availability, what shifts theyve been assigned
 # shifts class holds all shift info, department, what period maps to what shift time, time, whos doing it, day
 # scheduler class is main csp solver, maximising shifts assigned and giving out shifts as evenly as possible
+
+
+# employee class holds name, availability, if they can work in a certain day
+# if they have work then unavailable for the rest of the day and what shifts theyve been assigned
+# also show a list of all people who are eligible for work but havent been assigned in their period
+
+# shifts class holds shift time, department, which periods the shift time is, whos doing it, day
+# if its not been assigned to anyone, assign max two people to each shift, 
+
+# scheduler class has the csp solver of assigning to most constrained first and least assigned employee 
+# checking with employee class if employee is eligible to work in that period
+
+# save to excel in nice format (jordan rota format)
