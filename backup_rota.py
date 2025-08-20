@@ -80,6 +80,9 @@ class Employee:
         Return names of employees available in a given day and period
         '''
         return [emp.name for emp in employees if emp.is_available(day, period)]
+    
+    def assigned_count(self):
+        return len(self.assigned)
         
 
 
@@ -114,8 +117,8 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-# yes = Employee.available_employees(employees, "Saturday", "Evening")
-# print(yes)
+#yes = Employee.available_employees(employees, "Saturday", "Evening")
+#print(yes)
 
 
 
@@ -191,40 +194,64 @@ class Scheduler:
         self.all_shifts = all_shifts
 
       def most_constrained(self):
-          constrained_by_day = []
+          constrained_by_day = {}
 
           for day in DAYS:
-              morning_count = 0
-              afternoon_count = 0
-              evening_count = 0
-              for emp in employees:                
-                  if emp.availability[(day, "Morning")] == True:
-                      morning_count += 1
-                  if emp.availability[(day, "Afternoon")] == True:
-                      afternoon_count += 1
-                  if emp.availability[(day, "Evening")] == True:
-                      evening_count += 1
+            morning_count = 0
+            afternoon_count = 0
+            evening_count = 0
+            for emp in employees:               
+                if emp.availability[(day, "Morning")] == True:
+                        morning_count += 1
+                if emp.availability[(day, "Afternoon")] == True:
+                    afternoon_count += 1
+                if emp.availability[(day, "Evening")] == True:
+                    evening_count += 1
 
-              counts = [morning_count, afternoon_count, evening_count]
-              period_count = list(zip(counts, PERIODS))
-              sorted_count = sorted(period_count)
+            counts = [morning_count, afternoon_count, evening_count]
+            period_count = list(zip(counts, PERIODS))
+            sorted_count = sorted(period_count)
 
-              constrained_by_day.append(sorted_count)    
+            constrained_by_day[day] = sorted_count    
 
           return constrained_by_day
       
-      def get_least_assigned():
+      def least_assigned(self):
+          '''
+          With all available people together
+          Find out of all of them who has the least many assignments
+          Give them the next shift
+
+          pass in most constrained
+          gather all available from this period
+          sort them least to most assigned
+          '''
+          all_days_constraints = self.most_constrained()
+          all_least_assigned = []
+
+          for day in DAYS:
+              period_counts = all_days_constraints[day]
+              least_period = min(period_counts, key=period_counts)
+              all_least_assigned.append(Employee.available_employees(employees, day, least_period))
+
+
+
+
+          return all_least_assigned
+              
+
+
+
+          
+      
+#      def backtesting():
           
 
 
 
-          return least_assigned_employee
 
-
-
-
-#rota = Scheduler(employees, all_shifts)
-#print(rota.most_constrained())
+rota = Scheduler(employees, all_shifts)
+print(rota.least_assigned())
 
 
 
