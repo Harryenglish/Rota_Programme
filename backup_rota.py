@@ -227,17 +227,21 @@ class Scheduler:
           sort them least to most assigned
           '''
           all_days_constraints = self.most_constrained()
-          all_least_assigned = []
+          all_available = []
 
           for day in DAYS:
               period_counts = all_days_constraints[day]
-              least_period = min(period_counts, key=period_counts)
-              all_least_assigned.append(Employee.available_employees(employees, day, least_period))
+              for count, period in period_counts:  
+                  all_available.append(Employee.available_employees(employees, day, period))
+              
+          # turn all_available list into dictionary
+          # now we have list of whos all available in these periods
+          # make a method in employee to see who has the least amount of assignments
 
 
 
 
-          return all_least_assigned
+          return all_available
               
 #######      FIX LEAST ASSIGNED DICTIONARY LOGIC !!!!!
 
