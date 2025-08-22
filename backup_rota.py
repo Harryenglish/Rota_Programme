@@ -271,4 +271,4 @@ print(rota.least_assigned())
 
 # build methods in shifts and employee classes to be able to assign and unassign shifts
 
-# build the backtesting method to explore other options if first isnt viable
+# build the backtracking method to explore other options if first isnt viable
