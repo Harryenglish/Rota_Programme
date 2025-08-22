@@ -84,8 +84,6 @@ class Employee:
     def assigned_count(self):
         return len(self.assigned)
         
-
-
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
     
@@ -117,8 +115,8 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-#yes = Employee.available_employees(employees, "Saturday", "Evening")
-#print(yes)
+#test = Employee.available_employees(employees, "Saturday", "Evening")
+#print(test)
 
 
 
@@ -226,24 +224,26 @@ class Scheduler:
           gather all available from this period
           sort them least to most assigned
           '''
+          least_assigned_sorted = {}
           all_days_constraints = self.most_constrained()
-          all_available = []
 
           for day in DAYS:
+              daily_dictionary = {}
               period_counts = all_days_constraints[day]
               for count, period in period_counts:  
-                  all_available.append(Employee.available_employees(employees, day, period))
+                  daily_dictionary[period] = Employee.available_employees(employees, day, period)
+
+              least_assigned_sorted[day] = daily_dictionary
               
-          # turn all_available list into dictionary
           # now we have list of whos all available in these periods
           # make a method in employee to see who has the least amount of assignments
 
 
 
 
-          return all_available
+          return least_assigned_sorted
               
-#######      FIX LEAST ASSIGNED DICTIONARY LOGIC !!!!!
+
 
 
           
@@ -260,4 +260,15 @@ print(rota.least_assigned())
 
 
 
-# find the least assigned person as a method in scheduler and start scheduling that period from there !
+
+
+
+
+# make method in employee class to find how many assignments they have, make compatible with dictionary
+
+# pass through least assigned method to have all available staff in order to least assigned to most 
+# in the most contsrained to least constrained shifts !
+
+# build methods in shifts and employee classes to be able to assign and unassign shifts
+
+# build the backtesting method to explore other options if first isnt viable
