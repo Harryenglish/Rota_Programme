@@ -82,7 +82,7 @@ class Employee:
         return [emp.name for emp in employees if emp.is_available(day, period)]
     
     def assigned_count(self, name):
-
+            ## MAKE ASSIGNED AND UNASSIGNED METHOD
         return len(self.assigned)
         
     def __repr__(self):
@@ -111,7 +111,7 @@ def employee_dictionary():
 
 employees = employee_dictionary()
 
-# print(employees)
+print(employees)
 
 
 # We can now find the availability of people on a given period
@@ -273,3 +273,21 @@ class Scheduler:
 # build methods in shifts and employee classes to be able to assign and unassign shifts
 
 # build the backtracking method to explore other options if first isnt viable
+
+
+
+
+
+
+
+
+# make dictionary for assigned and unassigned shifts for both employees and shifts
+# make method for assign and unassigning shifts in employee and shfits
+
+# make method for counting length of assigned shifts
+
+# finish least assigned method by implementing least amount of assignments method
+
+# build backtracking heuristics method
+
+# update shifts list to accurately represent required shifts
