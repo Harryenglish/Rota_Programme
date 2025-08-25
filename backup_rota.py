@@ -81,7 +81,8 @@ class Employee:
         '''
         return [emp.name for emp in employees if emp.is_available(day, period)]
     
-    def assigned_count(self):
+    def assigned_count(self, name):
+
         return len(self.assigned)
         
     def __repr__(self):
@@ -254,8 +255,8 @@ class Scheduler:
 
 
 
-rota = Scheduler(employees, all_shifts)
-print(rota.least_assigned())
+#rota = Scheduler(employees, all_shifts)
+#print(rota.least_assigned())
 
 
 
