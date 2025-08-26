@@ -109,7 +109,7 @@ def employee_dictionary():
 
     return employees    
 
-#employees = employee_dictionary()
+employees = employee_dictionary()
 
 #print(employees)
 
@@ -148,23 +148,25 @@ class Shift:
 
 
 def shift_dictionary():    
-    all_shifts = []
+    all_shifts = {}
     index_to_label = {}
 
     i = 0 
     for day in DAYS:
+        daily_shifts_list = []
         for period, times in zip(PERIODS, [morning_required, afternoon_required, evening_required]):
             for time in times:
                 shift = Shift(period, time, department_mapping[time], day)
-                all_shifts.append(shift)
+                daily_shifts_list.append(shift)
                 index_to_label[i] = (day, period, time, department_mapping[time])
                 i += 1
+                all_shifts[day] = daily_shifts_list
 
     return all_shifts, index_to_label
 
 all_shifts, index_to_label = shift_dictionary()
 
-# print(all_shifts)
+print(all_shifts)
 # print(index_to_label)
 
 
