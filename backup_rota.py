@@ -282,6 +282,7 @@ class Scheduler:
 
 
 # assign day to shift dictionary
+# check rigour of dictionaries, if it only looks up by day 
 
 # make dictionary for assigned and unassigned shifts for both employees and shifts
 # make method for assign and unassigning shifts in employee and shfits
