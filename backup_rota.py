@@ -109,9 +109,9 @@ def employee_dictionary():
 
     return employees    
 
-employees = employee_dictionary()
+#employees = employee_dictionary()
 
-print(employees)
+#print(employees)
 
 
 # We can now find the availability of people on a given period
@@ -279,7 +279,7 @@ class Scheduler:
 
 
 
-
+# assign day to shift dictionary
 
 # make dictionary for assigned and unassigned shifts for both employees and shifts
 # make method for assign and unassigning shifts in employee and shfits
