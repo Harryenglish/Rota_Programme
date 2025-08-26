@@ -81,7 +81,7 @@ class Employee:
         '''
         return [emp.name for emp in employees if emp.is_available(day, period)]
     
-    def assigned_count(self, name):
+    def assigned_count(self):
             ## MAKE ASSIGNED AND UNASSIGNED METHOD
         return len(self.assigned)
         
