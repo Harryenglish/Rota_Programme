@@ -111,13 +111,22 @@ def employee_dictionary():
 
 employees = employee_dictionary()
 
-#print(employees)
+# print(employees)
 
 
 # We can now find the availability of people on a given period
 
 #test = Employee.available_employees(employees, "Saturday", "Evening")
 #print(test)
+
+
+def assigned_lists():
+    assigned_shifts = {}
+    assigned_employees = {}
+
+    return assigned_shifts, assigned_employees
+
+assigned_shifts, assigned_employees = assigned_lists()
 
 
 
@@ -140,6 +149,7 @@ class Shift:
         self.day = day
         self.assigned = []
         self.unassignable = False
+
 
     def __repr__(self):
         return f"Shift({self.period}, {self.time_range}, dept={self.department}, assigned={self.assigned})"
@@ -166,7 +176,7 @@ def shift_dictionary():
 
 all_shifts, index_to_label = shift_dictionary()
 
-print(all_shifts)
+# print(all_shifts)
 # print(index_to_label)
 
 
