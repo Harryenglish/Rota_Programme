@@ -279,33 +279,50 @@ class Scheduler:
 
           return available_candidates
 
+
     
       def least_assigned(self):
+          '''
+          Take available candidates dictionary
+          Extract the lists of available candidates for any given period on any given day
+          Sort and put into new dictionary in same format
+          '''
 
           available_candidates = self.available_candidates()
-          employee_count_check = []
-          assignment_count_list = []
-          test = []
+          least_assigned = {}
+          weekly_available = []
 
-          for day, periods in least_assigned_sorted.items():
+          for day, periods in available_candidates.items():
+              daily_available = []
               for period, emp_list in periods.items():
-                  for emp in emp_list:
-                      test.append(emp)
-                      #employee_count_check.append(emp)
-                      #assignment_count_list.append(Employee.assigned_count(emp))
-                      
-              named_assignment_count = list(zip(employee_count_check, assignment_count_list))
-              sorted_assignment_count = sorted(named_assignment_count)    
-
-          for day, periods in least_assigned_sorted.items():
-              for period, emp_list in periods.items():
-                  sorted_list = sorted(emp_list, key=lambda name: employees[name].assigned_count())
-                
-                  least_assigned_sorted[day][period] = sorted_list
-          
+                  daily_available.append(emp_list)
+              weekly_available.append(daily_available)        
 
 
-          return test
+          all_names_sorted = []
+
+          for i in range(len(DAYS)):
+              daily_sorted = []
+              for j in range(len(PERIODS)):
+                  name_assign_count = [(emp, employees[emp].assigned_count()) for emp in weekly_available[i][j]]
+                  sorted_count = sorted(name_assign_count, key=lambda x: x[1])
+                  sorted_names = [emp for emp, count in sorted_count]
+                  daily_sorted.append(sorted_names)
+              all_names_sorted.append(daily_sorted)      
+                  
+
+          day_names = list(available_candidates.keys())  
+
+          for day_idx, day in enumerate(day_names):
+              period_order = list(available_candidates[day].keys())  
+              least_assigned[day] = {}
+              for period_idx, period in enumerate(period_order):
+                  least_assigned[day][period] = all_names_sorted[day_idx][period_idx]
+              
+
+
+
+          return least_assigned
               
 
 
