@@ -355,3 +355,15 @@ print(rota.available_candidates())
 # build backtracking heuristics method
 
 # update shifts list to accurately represent required shifts
+
+
+
+# finish least assigned method
+
+# pass into backtesting method and assign shifts from there
+
+# make method for assigning to employee and shift
+
+# will probs need to make dictionaries for that as well
+
+# export the file !
