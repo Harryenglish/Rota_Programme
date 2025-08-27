@@ -121,6 +121,12 @@ employees = employee_dictionary()
 
 
 def assigned_lists():
+    '''
+    A dictionary to tell us who is taking a shift
+
+    This function will return a dictionary for the shifts class and for the employee class
+    We need to build it from the day, department, shift and then assign the name to it
+    '''
     assigned_shifts = {}
     assigned_employees = {}
 
