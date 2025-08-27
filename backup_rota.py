@@ -79,7 +79,7 @@ class Employee:
         '''
         Return names of employees available in a given day and period
         '''
-        return [emp.name for emp in employees if emp.is_available(day, period)]
+        return [emp for emp in employees if employees[emp].is_available(day, period)]
     
     def assigned_count(self):
         return len(self.assigned)
@@ -107,7 +107,7 @@ def employee_dictionary():
         emp = Employee(name, availability)
         people.append(emp)
 
-        employees[name] = people  
+        employees[name] = Employee(name, availability)  
 
     return employees    
 
@@ -118,8 +118,8 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-# for emp in employees:
-#    test = Employee.assigned_count(emp)
+#for emp in employees:
+#    test = employees[emp].is_available('Friday', 'Afternoon')
 #    print(test)
 
 
@@ -244,12 +244,12 @@ class Scheduler:
             morning_count = 0
             afternoon_count = 0
             evening_count = 0
-            for emp in employees:               
-                if emp.availability[(day, "Morning")] == True:
-                        morning_count += 1
-                if emp.availability[(day, "Afternoon")] == True:
+            for emp in employees:
+                if employees[emp].availability[(day, "Morning")] == True:
+                    morning_count += 1               
+                if employees[emp].availability[(day, "Afternoon")] == True:
                     afternoon_count += 1
-                if emp.availability[(day, "Evening")] == True:
+                if employees[emp].availability[(day, "Afternoon")] == True:
                     evening_count += 1
 
             counts = [morning_count, afternoon_count, evening_count]
@@ -279,15 +279,10 @@ class Scheduler:
 
           return available_candidates
 
-        #  for day in DAYS:
-        #      for count, period in least_assigned_sorted:
-        #          for emp in 
-
-
-
-            ######        SEPARATE METHODS INTO, COLLECTING AVAILABLE AND SORTING FOR LEAST ASSIGNED
+    
       def least_assigned(self):
 
+          available_candidates = self.available_candidates()
           employee_count_check = []
           assignment_count_list = []
           test = []
@@ -307,10 +302,6 @@ class Scheduler:
                   sorted_list = sorted(emp_list, key=lambda name: employees[name].assigned_count())
                 
                   least_assigned_sorted[day][period] = sorted_list
-          # now we have list of whos all available in these periods
-          # make a method in employee to see who has the least amount of assignments
-        
-          # implement employee count method here
           
 
 
@@ -327,8 +318,8 @@ class Scheduler:
 
 
 
-#rota = Scheduler(employees, all_shifts, assigned_shifts, assigned_employees)
-#print(rota.available_candidates())
+rota = Scheduler(employees, all_shifts, assigned_shifts, assigned_employees)
+print(rota.available_candidates())
 
 
 
