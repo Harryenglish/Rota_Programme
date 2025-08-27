@@ -91,7 +91,7 @@ class Employee:
 
 def employee_dictionary():
 
-    employees = []
+    employees = {}
     shift_columns = df.columns[1:]
 
     # Loop through 'Names' to get all the names. Then loop through all the shifts to get availability.
@@ -99,12 +99,15 @@ def employee_dictionary():
     for i, row in df.iterrows():
         name = row['Name']
         availability = []
+        people = []
         for col in shift_columns:
             confirmed = row[col]
             availability.append(confirmed)     
         
         emp = Employee(name, availability)
-        employees.append(emp)
+        people.append(emp)
+
+        employees[name] = people  
 
     return employees    
 
@@ -115,7 +118,7 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-#for emp in employees:
+# for emp in employees:
 #    test = Employee.assigned_count(emp)
 #    print(test)
 
@@ -228,9 +231,11 @@ class Scheduler:
       Check if a shift has anyone assigned to it
       If a shift has nobody to fill it do backtracking once, if fail then mark unassigned
       '''
-      def __init__(self, employees, all_shifts):
+      def __init__(self, employees, all_shifts, assigned_shifts, assigned_employees):
         self.employees = employees
         self.all_shifts = all_shifts
+        self.assigned_shifts = assigned_shifts
+        self.assigned_employees = assigned_employees
 
       def most_constrained(self):
           constrained_by_day = {}
@@ -255,17 +260,13 @@ class Scheduler:
 
           return constrained_by_day
       
-      def least_assigned(self):
+      def available_candidates(self):
           '''
           With all available people together
           Find out of all of them who has the least many assignments
           Give them the next shift
-
-          pass in most constrained
-          gather all available from this period
-          sort them least to most assigned
           '''
-          least_assigned_sorted = {}
+          available_candidates = {}
           all_days_constraints = self.most_constrained()
 
           for day in DAYS:
@@ -274,16 +275,46 @@ class Scheduler:
               for count, period in period_counts:  
                   daily_dictionary[period] = Employee.available_employees(employees, day, period)
 
-              least_assigned_sorted[day] = daily_dictionary
-              
+              available_candidates[day] = daily_dictionary
+
+          return available_candidates
+
+        #  for day in DAYS:
+        #      for count, period in least_assigned_sorted:
+        #          for emp in 
+
+
+
+            ######        SEPARATE METHODS INTO, COLLECTING AVAILABLE AND SORTING FOR LEAST ASSIGNED
+      def least_assigned(self):
+
+          employee_count_check = []
+          assignment_count_list = []
+          test = []
+
+          for day, periods in least_assigned_sorted.items():
+              for period, emp_list in periods.items():
+                  for emp in emp_list:
+                      test.append(emp)
+                      #employee_count_check.append(emp)
+                      #assignment_count_list.append(Employee.assigned_count(emp))
+                      
+              named_assignment_count = list(zip(employee_count_check, assignment_count_list))
+              sorted_assignment_count = sorted(named_assignment_count)    
+
+          for day, periods in least_assigned_sorted.items():
+              for period, emp_list in periods.items():
+                  sorted_list = sorted(emp_list, key=lambda name: employees[name].assigned_count())
+                
+                  least_assigned_sorted[day][period] = sorted_list
           # now we have list of whos all available in these periods
           # make a method in employee to see who has the least amount of assignments
         
           # implement employee count method here
+          
 
 
-
-          return least_assigned_sorted
+          return test
               
 
 
@@ -296,8 +327,8 @@ class Scheduler:
 
 
 
-rota = Scheduler(employees, all_shifts)
-print(rota.least_assigned())
+#rota = Scheduler(employees, all_shifts, assigned_shifts, assigned_employees)
+#print(rota.available_candidates())
 
 
 
