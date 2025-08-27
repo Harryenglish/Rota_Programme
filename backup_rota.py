@@ -82,7 +82,6 @@ class Employee:
         return [emp.name for emp in employees if emp.is_available(day, period)]
     
     def assigned_count(self):
-            ## MAKE ASSIGNED AND UNASSIGNED METHOD
         return len(self.assigned)
         
     def __repr__(self):
@@ -116,8 +115,19 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-#test = Employee.available_employees(employees, "Saturday", "Evening")
-#print(test)
+#for emp in employees:
+#    test = Employee.assigned_count(emp)
+#    print(test)
+
+
+
+
+
+
+
+
+
+
 
 
 def assigned_lists():
@@ -133,6 +143,18 @@ def assigned_lists():
     return assigned_shifts, assigned_employees
 
 assigned_shifts, assigned_employees = assigned_lists()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -256,7 +278,8 @@ class Scheduler:
               
           # now we have list of whos all available in these periods
           # make a method in employee to see who has the least amount of assignments
-
+        
+          # implement employee count method here
 
 
 
@@ -273,8 +296,8 @@ class Scheduler:
 
 
 
-#rota = Scheduler(employees, all_shifts)
-#print(rota.least_assigned())
+rota = Scheduler(employees, all_shifts)
+print(rota.least_assigned())
 
 
 
