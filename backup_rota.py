@@ -319,18 +319,17 @@ class Scheduler:
               for period_idx, period in enumerate(period_order):
                   least_assigned[day][period] = all_names_sorted[day_idx][period_idx]
               
-
-
-
           return least_assigned
-              
-
-
-
+                  
+      def backtracking():
+          '''
+          This method is in charge of assigning shifts
+          If there is a conflict, the method will backtrack and schedule appropriately
+          Checks if someone is assigned on that period, if not assign and mark rest of day off
+          '''
           
-      
-#      def backtesting():
-          
+
+          return 
 
 
 
@@ -345,37 +344,11 @@ print(rota.available_candidates())
 
 
 
-# make method in employee class to find how many assignments they have, make compatible with dictionary
-
-# pass through least assigned method to have all available staff in order to least assigned to most 
-# in the most contsrained to least constrained shifts !
-
-# build methods in shifts and employee classes to be able to assign and unassign shifts
-
-# build the backtracking method to explore other options if first isnt viable
 
 
 
 
 
-
-# assign day to shift dictionary
-# check rigour of dictionaries, if it only looks up by day 
-
-# make dictionary for assigned and unassigned shifts for both employees and shifts
-# make method for assign and unassigning shifts in employee and shfits
-
-# make method for counting length of assigned shifts
-
-# finish least assigned method by implementing least amount of assignments method
-
-# build backtracking heuristics method
-
-# update shifts list to accurately represent required shifts
-
-
-
-# finish least assigned method
 
 # pass into backtesting method and assign shifts from there
 
