@@ -67,7 +67,7 @@ class Employee:
         self.availability = {
             index_to_label[i]: available
             for i, available in enumerate(availability_flat)}
-        self.assigned = []
+        self.assigned = {}
 
     def is_available(self, day, period):
         '''
@@ -83,7 +83,23 @@ class Employee:
     
     def assigned_count(self):
         return len(self.assigned)
+    
+    #def can_work(self, day, period):
+    #    if day in self.assigned and self.assigned[day]:
+    #        return False
+    #    return self.is_available(day, period)
         
+    #def assign(self, day, period):
+    #    if day not in self.assigned:
+    #        self.assigned[day] = []
+    #    self.assigned[day].append(period)
+    
+    #def unassign(self, day, period):
+    #    if day in self.assigned and period in self.assigned[day]:
+    #        self.assigned[day].remove(period)
+    #        if not self.assigned[day]:
+    #            del self.assigned[day]
+
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
     
@@ -121,39 +137,6 @@ employees = employee_dictionary()
 #for emp in employees:
 #    test = employees[emp].is_available('Friday', 'Afternoon')
 #    print(test)
-
-
-
-
-
-
-
-
-
-
-
-
-def assigned_lists():
-    '''
-    A dictionary to tell us who is taking a shift
-
-    This function will return a dictionary for the shifts class and for the employee class
-    We need to build it from the day, department, shift and then assign the name to it
-    '''
-    assigned_shifts = {}
-    assigned_employees = {}
-
-    return assigned_shifts, assigned_employees
-
-assigned_shifts, assigned_employees = assigned_lists()
-
-
-
-
-
-
-
-
 
 
 
@@ -231,12 +214,10 @@ class Scheduler:
       Check if a shift has anyone assigned to it
       If a shift has nobody to fill it do backtracking once, if fail then mark unassigned
       '''
-      def __init__(self, employees, all_shifts, assigned_shifts, assigned_employees):
+      def __init__(self, employees, all_shifts):
         self.employees = employees
         self.all_shifts = all_shifts
-        self.assigned_shifts = assigned_shifts
-        self.assigned_employees = assigned_employees
-
+        
       def most_constrained(self):
           constrained_by_day = {}
 
@@ -334,7 +315,7 @@ class Scheduler:
 
 
 
-rota = Scheduler(employees, all_shifts, assigned_shifts, assigned_employees)
+rota = Scheduler(employees, all_shifts)
 print(rota.available_candidates())
 
 
@@ -350,10 +331,14 @@ print(rota.available_candidates())
 
 
 
-# pass into backtesting method and assign shifts from there
+# build method to see if working on a period then unavailable for the rest of the day or free all periods
 
-# make method for assigning to employee and shift
+# build assign and unassign
 
-# will probs need to make dictionaries for that as well
+# build map for period to shifts assignment
 
-# export the file !
+# add heuristics (one shift a day, one shift given once, no clopens)
+
+# build backtracking
+
+# export !
