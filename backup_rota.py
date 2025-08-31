@@ -315,6 +315,11 @@ class Scheduler:
           This method is in charge of assigning shifts
           If there is a conflict, the method will backtrack and schedule appropriately
           Checks if someone is assigned on that period, if not assign and mark rest of day off
+
+          use can work method to see if someones available
+          check shifts dictionary to find shift needing assigned
+          build assign / unassign method
+          build backtracker to check everything fits together
           '''
           
 
