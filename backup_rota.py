@@ -84,15 +84,23 @@ class Employee:
     def assigned_count(self):
         return len(self.assigned)
     
-    #def can_work(self, day, period):
-    #    if day in self.assigned and self.assigned[day]:
-    #        return False
-    #    return self.is_available(day, period)
+    def can_work(self, day, period, prev_day=None, prev_period=None):
+        if not self.is_available(day, period):
+            return False
+        
+        if day in self.assigned and self.assigned[day]:
+            return False
+        
+        if prev_day and prev_period:
+            if self.assigned.get(prev_day, []) and prev_period == "Evening" and period == "Morning":
+                return False
+
+        return True
         
     #def assign(self, day, period):
     #    if day not in self.assigned:
     #        self.assigned[day] = []
-    #    self.assigned[day].append(period)
+    #        self.assigned[day].append(period)
     
     #def unassign(self, day, period):
     #    if day in self.assigned and period in self.assigned[day]:
@@ -190,7 +198,7 @@ def shift_dictionary():
 
 all_shifts, index_to_label = shift_dictionary()
 
-# print(all_shifts)
+print(all_shifts)
 # print(index_to_label)
 
 
@@ -315,8 +323,8 @@ class Scheduler:
 
 
 
-rota = Scheduler(employees, all_shifts)
-print(rota.available_candidates())
+#rota = Scheduler(employees, all_shifts)
+#print(rota.available_candidates())
 
 
 
@@ -327,7 +335,10 @@ print(rota.available_candidates())
 
 
 
-
+# make a method to check if available on a period (could be done)
+# use the shift dictionary to locate the shift needed in that period
+# make assign and unassign method 
+# then assign shifts to least assigned in most constrained through the dictionary
 
 
 
