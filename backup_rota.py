@@ -198,7 +198,7 @@ def shift_dictionary():
 
 all_shifts, index_to_label = shift_dictionary()
 
-print(all_shifts)
+# print(all_shifts)
 # print(index_to_label)
 
 
