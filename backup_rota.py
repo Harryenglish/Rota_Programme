@@ -97,16 +97,27 @@ class Employee:
 
         return True
         
-    #def assign(self, day, period):
-    #    if day not in self.assigned:
-    #        self.assigned[day] = []
-    #        self.assigned[day].append(period)
-    
-    #def unassign(self, day, period):
-    #    if day in self.assigned and period in self.assigned[day]:
-    #        self.assigned[day].remove(period)
-    #        if not self.assigned[day]:
-    #            del self.assigned[day]
+    def assign(self, day, shift):
+        if day not in self.assigned:
+            self.assigned[day] = []
+        self.assigned[day].append({
+            "period": shift.period,
+            "department": shift.department,
+            "time_range": shift.time_range,
+            })
+
+    def unassign(self, day, shift):
+        if day in self.assigned:
+            self.assigned[day] = [
+                s for s in self.assigned[day]
+                if not (
+                    s["period"] == shift.period and
+                    s["department"] == shift.department and
+                    s["time_range"] == shift.time_range
+                )]
+            
+            if not self.assigned[day]:  
+                del self.assigned[day]            
 
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
@@ -172,6 +183,13 @@ class Shift:
         self.assigned = []
         self.unassignable = False
 
+    def assign(self, employee):
+        if employee not in self.assigned:
+            self.assigned.append(employee)
+
+    def unassign(self, employee):
+        if employee in self.assigned:
+            self.assigned.remove(employee)
 
     def __repr__(self):
         return f"Shift({self.period}, {self.time_range}, dept={self.department}, assigned={self.assigned})"
@@ -323,18 +341,6 @@ class Scheduler:
           '''
           least_assigned = self.least_assigned()
 
-          #ready_to_work = []
-          #for day, periods in least_assigned.items():
-          #    ready_to_work_day = []
-          #    for periods, emp_list in periods.items():
-          #        ready_to_work_period = []
-          #        for emp in emp_list:
-          #          if self.employees[emp].can_work(day, periods, prev_day=None, prev_period=None) == True:
-          #              ready_to_work_period.append(emp)
-          #          ready_to_work_day.append(ready_to_work_period)
-              #ready_to_work.append(ready_to_work_day)
-
-
           ready_to_work = {}
  
           for day, periods_dict in least_assigned.items():
@@ -343,8 +349,27 @@ class Scheduler:
                   ready_to_work[day][period] = [
                       emp for emp in emp_list
                       if self.employees[emp].can_work(day, period, prev_day=None, prev_period=None)]
+                  
+          #schedule = {}
 
-          return ready_to_work    
+          #for day, shifts in all_shifts.items():   
+          #    schedule[day] = []
+    
+          #    shifts_by_period = {}
+          #    for shift in shifts:
+          #        shifts_by_period.setdefault(shift.period, []).append(shift)
+    
+          #    for period, shifts_list in shifts_by_period.items():
+          #        employees = ready_to_work.get(day, {}).get(period, [])
+        
+          #        for shift, emp in zip(shifts_list, employees):
+          #            shift.assign(emp)  
+          #            schedule[day].append((shift, emp))
+
+          return ready_to_work
+          
+
+             
                     
 
 
@@ -355,29 +380,5 @@ rota = Scheduler(employees, all_shifts)
 print(rota.backtracking())
 
 
-
-
-
-
-
-
-
-
-# make a method to check if available on a period (could be done)
-# use the shift dictionary to locate the shift needed in that period
-# make assign and unassign method 
-# then assign shifts to least assigned in most constrained through the dictionary
-
-
-
-# build method to see if working on a period then unavailable for the rest of the day or free all periods
-
-# build assign and unassign
-
-# build map for period to shifts assignment
-
-# add heuristics (one shift a day, one shift given once, no clopens)
-
-# build backtracking
-
-# export !
+# build backtracking into recent method in scheduler so it assigns correctly to the correct shift
+# double check heuristics in can_work
