@@ -143,7 +143,7 @@ employees = employee_dictionary()
 # We can now find the availability of people on a given period
 
 #for emp in employees:
-#    test = employees[emp].is_available('Friday', 'Afternoon')
+#    test = employees[emp].can_work('Friday', 'Afternoon', prev_day=None, prev_period=None)
 #    print(test)
 
 
@@ -310,7 +310,7 @@ class Scheduler:
               
           return least_assigned
                   
-      def backtracking():
+      def backtracking(self):
           '''
           This method is in charge of assigning shifts
           If there is a conflict, the method will backtrack and schedule appropriately
@@ -321,15 +321,38 @@ class Scheduler:
           build assign / unassign method
           build backtracker to check everything fits together
           '''
-          
+          least_assigned = self.least_assigned()
 
-          return 
+          #ready_to_work = []
+          #for day, periods in least_assigned.items():
+          #    ready_to_work_day = []
+          #    for periods, emp_list in periods.items():
+          #        ready_to_work_period = []
+          #        for emp in emp_list:
+          #          if self.employees[emp].can_work(day, periods, prev_day=None, prev_period=None) == True:
+          #              ready_to_work_period.append(emp)
+          #          ready_to_work_day.append(ready_to_work_period)
+              #ready_to_work.append(ready_to_work_day)
+
+
+          ready_to_work = {}
+ 
+          for day, periods_dict in least_assigned.items():
+              ready_to_work[day] = {}
+              for period, emp_list in periods_dict.items():
+                  ready_to_work[day][period] = [
+                      emp for emp in emp_list
+                      if self.employees[emp].can_work(day, period, prev_day=None, prev_period=None)]
+
+          return ready_to_work    
+                    
 
 
 
 
-#rota = Scheduler(employees, all_shifts)
-#print(rota.available_candidates())
+
+rota = Scheduler(employees, all_shifts)
+print(rota.backtracking())
 
 
 
