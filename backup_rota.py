@@ -97,23 +97,23 @@ class Employee:
         return [emp for emp in employees if employees[emp].is_available(day, period)]
     
     def assigned_count(self):
-        return len(self.assigned)
+        return sum(len(shifts) for day_shifts in self.assigned.values() for shifts in day_shifts.values())
     
     def can_work(self, day, period):
         if self.is_available(day, period) == False:
             return False
         
-        if self.is_available(day, period=None) == False:
+        if any(self.assigned[day][p] for p in PERIODS):
             return False
         
         idx = DAYS.index(day)
         prev_day = DAYS[idx - 1]
         next_day = DAYS[min(6, (idx + 1))]
 
-        if self.assigned(day, period="Evening") == True and self.assigned(next_day, period="Morning") == True:
+        if self.assigned[day]["Evening"] and self.assigned[next_day]["Morning"]:
             return False
 
-        if self.assigned(day, period="Morning") == True and self.assigned(prev_day, period="Evening") == True:
+        if self.assigned[day]["Morning"] and self.assigned[prev_day]["Evening"]:
             return False
         
         else:
@@ -241,20 +241,19 @@ def shift_dictionary():
 
     i = 0 
     for day in DAYS:
-        daily_shifts_list = []
+        all_shifts[day] = {period: [] for period in PERIODS}
         for period, times in zip(PERIODS, [morning_required, afternoon_required, evening_required]):
             for time in times:
                 shift = Shift(period, time, department_mapping[time], day)
-                daily_shifts_list.append(shift)
+                all_shifts[day][period].append(shift)
                 index_to_label[i] = (day, period, time, department_mapping[time])
                 i += 1
-                all_shifts[day] = daily_shifts_list
 
     return all_shifts, index_to_label
 
 all_shifts, index_to_label = shift_dictionary()
 
-# print(all_shifts)
+# print(all_shifts)
 # print(index_to_label)
 
 
@@ -391,26 +390,25 @@ class Scheduler:
           This method is in charge of assigning shifts
           If there is a conflict, the method will backtrack and schedule appropriately
           Checks if someone is assigned on that period, if not assign and mark rest of day off
-
-          use can work method to see if someones available
-          check shifts dictionary to find shift needing assigned
-          build assign / unassign method
-          build backtracker to check everything fits together
           '''
 
           ### CHECK COMPATABILITY OF 'SHIFT' WITH ASSIGNED METHOD ###
 
-          rota = {}
+          rota = {day: {period: [] for period in PERIODS} for day in DAYS}
           least_assigned = self.least_assigned()
- 
-          for day, periods_dict in least_assigned.items():
-              rota[day] = {}
-              for period, emp_list in periods_dict.items():
-                  rota[day][period] = [
-                      emp for emp in emp_list
-                      if self.employees[emp].can_work(day, period, prev_day=None, prev_period=None)]
-          
-          
+                                     
+          for day in DAYS:
+              for period in PERIODS:
+                  for shift in all_shifts[day][period]:
+                      for emp in least_assigned[day][period]:
+                          if self.employees[emp].can_work(day, period):
+                              self.employees[emp].assign(day, period, shift)
+                              shift.assign(emp)
+                              rota[day][period].append({"employee": emp, "shift": shift})
+                              break
+                          else:
+                              self.backtracking()
+                          
           return rota
           
 
@@ -428,5 +426,16 @@ class Scheduler:
 
 
 
-#rota = Scheduler(employees, all_shifts)
-#print(rota.backtracking())
+rota = Scheduler(employees, all_shifts)
+print(rota.rota_assigner())
+
+
+
+
+#for day, periods_dict in least_assigned.items():
+          #    rota[day] = {}
+          #    for period, emp_list in periods_dict.items():
+          #        for i in range(len(max(morning_required, afternoon_required, evening_required))):
+          #          rota[day][period] = [
+          #              [emp for emp in emp_list if self.employees[emp].can_work(day, period)]
+          #                  [self.employees[emp].assign(day, period, all_shifts[day][period][i])]]
