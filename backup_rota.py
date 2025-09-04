@@ -73,8 +73,13 @@ class Employee:
         '''
         Check if this employee is available in a given day and period
         '''
-        return self.availability.get((day, period), False)
-    
+        if period is None:
+            return any(
+                self.availability.get((day, p), False) 
+                for p in ["Morning", "Afternoon", "Evening"])
+        else:
+            return self.availability.get((day, period), False)
+        
     def available_employees(employees, day, period):
         '''
         Return names of employees available in a given day and period
@@ -84,18 +89,29 @@ class Employee:
     def assigned_count(self):
         return len(self.assigned)
     
-    def can_work(self, day, period, prev_day=None, prev_period=None):
-        if not self.is_available(day, period):
+    def can_work(self, day, period):
+        if self.is_available(day, period) == False:
             return False
         
-        if day in self.assigned and self.assigned[day]:
+        if self.is_available(day, period=None) == False:
             return False
         
-        if prev_day and prev_period:
-            if self.assigned.get(prev_day, []) and prev_period == "Evening" and period == "Morning":
-                return False
+        else:
+            return True
 
-        return True
+    def clopen_rules(self, day): 
+        idx = DAYS.index(day)
+        prev_day = DAYS[idx - 1]
+        next_day = DAYS[min(6, (idx + 1))]
+
+        if self.assigned(day, period="Evening") == True and self.assigned(next_day, period="Morning") == True:
+            return False
+
+        if self.assigned(day, period="Morning") == True and self.assigned(prev_day, period="Evening") == True:
+            return False
+        
+        else:
+            return True
         
     def assign(self, day, shift):
         if day not in self.assigned:
@@ -153,9 +169,9 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-#for emp in employees:
-#    test = employees[emp].can_work('Friday', 'Afternoon', prev_day=None, prev_period=None)
-#    print(test)
+for emp in employees:
+    test = employees[emp].assigned
+    print(test)
 
 
 
@@ -330,6 +346,11 @@ class Scheduler:
                   
       def backtracking(self):
           '''
+          This method is in charge of if any of the tests fail, this rebuilds the rota and hopefully it works !!!!!!!!1
+          '''
+      
+      def rota_assigner(self):
+          '''
           This method is in charge of assigning shifts
           If there is a conflict, the method will backtrack and schedule appropriately
           Checks if someone is assigned on that period, if not assign and mark rest of day off
@@ -339,6 +360,7 @@ class Scheduler:
           build assign / unassign method
           build backtracker to check everything fits together
           '''
+          rota = {}
           least_assigned = self.least_assigned()
 
           ready_to_work = {}
@@ -349,8 +371,57 @@ class Scheduler:
                   ready_to_work[day][period] = [
                       emp for emp in emp_list
                       if self.employees[emp].can_work(day, period, prev_day=None, prev_period=None)]
-                  
-          #schedule = {}
+          
+          
+          return rota
+          
+
+             
+                    
+# make new method for backtracking
+# one for making the rota
+
+# double check can work, assign and unassign for employee and shifts
+
+# make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
+# build assigned dictionary while assigning shifts in rota assigner method
+
+
+
+
+
+
+
+#rota = Scheduler(employees, all_shifts)
+#print(rota.backtracking())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### POTENTIAL BACKTRACKING REGIME ###
+
+
+#schedule = {}
 
           #for day, shifts in all_shifts.items():   
           #    schedule[day] = []
@@ -365,20 +436,3 @@ class Scheduler:
           #        for shift, emp in zip(shifts_list, employees):
           #            shift.assign(emp)  
           #            schedule[day].append((shift, emp))
-
-          return ready_to_work
-          
-
-             
-                    
-
-
-
-
-
-rota = Scheduler(employees, all_shifts)
-print(rota.backtracking())
-
-
-# build backtracking into recent method in scheduler so it assigns correctly to the correct shift
-# double check heuristics in can_work
