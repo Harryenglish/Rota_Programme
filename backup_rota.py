@@ -28,9 +28,6 @@ index_to_label = {
     for period_index, period in enumerate(PERIODS)
     for i in [day_index * len(PERIODS) + period_index]}
 
-
-
-
 # Importing the google form as excel sheet
 
 df = pd.read_excel("test.xlsx")
@@ -47,6 +44,19 @@ for col in initial_columns:
             df.at[index, col] = True
         else:
              df.at[index, col] = False
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 # Employee class
 
@@ -67,7 +77,7 @@ class Employee:
         self.availability = {
             index_to_label[i]: available
             for i, available in enumerate(availability_flat)}
-        self.assigned = {}
+        self.assigned = {day: {period: [] for period in PERIODS} for day in DAYS}
 
     def is_available(self, day, period):
         '''
@@ -113,27 +123,30 @@ class Employee:
         else:
             return True
         
-    def assign(self, day, shift):
-        if day not in self.assigned:
-            self.assigned[day] = []
-        self.assigned[day].append({
-            "period": shift.period,
+    def assign(self, day, period, shift):
+        self.assigned[day][period].append({
             "department": shift.department,
-            "time_range": shift.time_range,
-            })
+            "time_range": shift.time_range
+        })
 
-    def unassign(self, day, shift):
-        if day in self.assigned:
-            self.assigned[day] = [
-                s for s in self.assigned[day]
-                if not (
-                    s["period"] == shift.period and
-                    s["department"] == shift.department and
-                    s["time_range"] == shift.time_range
-                )]
-            
-            if not self.assigned[day]:  
-                del self.assigned[day]            
+    def unassign(self, day, period, shift):
+        self.assigned[day][period].remove({
+            "department": shift.department,
+            "time_range": shift.time_range
+        })
+
+    #def unassign(self, day, shift):
+    #    if day in self.assigned:
+    #        self.assigned[day] = [
+    #            s for s in self.assigned[day]
+    #            if not (
+    #                s["department"] == shift.department and
+    #                s["time_range"] == shift.time_range
+    #                s["period"] == shift.period and
+    #            )]
+    #        
+    #        if not self.assigned[day]:  
+    #            del self.assigned[day]            
 
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
@@ -169,9 +182,24 @@ employees = employee_dictionary()
 
 # We can now find the availability of people on a given period
 
-for emp in employees:
-    test = employees[emp].assigned
-    print(test)
+#for emp in employees:
+#    test = employees[emp].assigned
+#    print(test)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -200,12 +228,10 @@ class Shift:
         self.unassignable = False
 
     def assign(self, employee):
-        if employee not in self.assigned:
-            self.assigned.append(employee)
+        self.assigned.append(employee)
 
     def unassign(self, employee):
-        if employee in self.assigned:
-            self.assigned.remove(employee)
+        self.assigned.remove(employee)
 
     def __repr__(self):
         return f"Shift({self.period}, {self.time_range}, dept={self.department}, assigned={self.assigned})"
@@ -232,8 +258,23 @@ def shift_dictionary():
 
 all_shifts, index_to_label = shift_dictionary()
 
-# print(all_shifts)
+# print(all_shifts)
 # print(index_to_label)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -360,6 +401,9 @@ class Scheduler:
           build assign / unassign method
           build backtracker to check everything fits together
           '''
+
+          ### CHECK COMPATABILITY OF 'SHIFT' WITH ASSIGNED METHOD ###
+
           rota = {}
           least_assigned = self.least_assigned()
 
