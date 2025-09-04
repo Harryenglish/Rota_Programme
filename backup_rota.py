@@ -106,10 +106,6 @@ class Employee:
         if self.is_available(day, period=None) == False:
             return False
         
-        else:
-            return True
-
-    def clopen_rules(self, day): 
         idx = DAYS.index(day)
         prev_day = DAYS[idx - 1]
         next_day = DAYS[min(6, (idx + 1))]
@@ -387,9 +383,9 @@ class Scheduler:
                   
       def backtracking(self):
           '''
-          This method is in charge of if any of the tests fail, this rebuilds the rota and hopefully it works !!!!!!!!1
+          This method is in charge of if any of the tests fail, this rebuilds the rota and hopefully it works !!!!!!!!
           '''
-      
+          
       def rota_assigner(self):
           '''
           This method is in charge of assigning shifts
@@ -406,13 +402,11 @@ class Scheduler:
 
           rota = {}
           least_assigned = self.least_assigned()
-
-          ready_to_work = {}
  
           for day, periods_dict in least_assigned.items():
-              ready_to_work[day] = {}
+              rota[day] = {}
               for period, emp_list in periods_dict.items():
-                  ready_to_work[day][period] = [
+                  rota[day][period] = [
                       emp for emp in emp_list
                       if self.employees[emp].can_work(day, period, prev_day=None, prev_period=None)]
           
@@ -425,8 +419,6 @@ class Scheduler:
 # make new method for backtracking
 # one for making the rota
 
-# double check can work, assign and unassign for employee and shifts
-
 # make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
 # build assigned dictionary while assigning shifts in rota assigner method
 
@@ -438,45 +430,3 @@ class Scheduler:
 
 #rota = Scheduler(employees, all_shifts)
 #print(rota.backtracking())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### POTENTIAL BACKTRACKING REGIME ###
-
-
-#schedule = {}
-
-          #for day, shifts in all_shifts.items():   
-          #    schedule[day] = []
-    
-          #    shifts_by_period = {}
-          #    for shift in shifts:
-          #        shifts_by_period.setdefault(shift.period, []).append(shift)
-    
-          #    for period, shifts_list in shifts_by_period.items():
-          #        employees = ready_to_work.get(day, {}).get(period, [])
-        
-          #        for shift, emp in zip(shifts_list, employees):
-          #            shift.assign(emp)  
-          #            schedule[day].append((shift, emp))
