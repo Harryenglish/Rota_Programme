@@ -400,7 +400,7 @@ class Scheduler:
           for day in DAYS:
               for period in PERIODS:
                   for shift in all_shifts[day][period]:
-                      for emp in least_assigned[day][period]:
+                      for emp in least_assigned[day][period]:    # least assigned periods dont line up with periods we are assigning to 
                           if self.employees[emp].can_work(day, period):
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
@@ -414,12 +414,11 @@ class Scheduler:
 
              
                     
-# make new method for backtracking
-# one for making the rota
 
 # make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
-# build assigned dictionary while assigning shifts in rota assigner method
-
+# check rota assigner to make sure logic is sound, make sure each method talks to eachother correctly 
+# build back tracker with correct logic
+# export
 
 
 
@@ -428,14 +427,3 @@ class Scheduler:
 
 rota = Scheduler(employees, all_shifts)
 print(rota.rota_assigner())
-
-
-
-
-#for day, periods_dict in least_assigned.items():
-          #    rota[day] = {}
-          #    for period, emp_list in periods_dict.items():
-          #        for i in range(len(max(morning_required, afternoon_required, evening_required))):
-          #          rota[day][period] = [
-          #              [emp for emp in emp_list if self.employees[emp].can_work(day, period)]
-          #                  [self.employees[emp].assign(day, period, all_shifts[day][period][i])]]
