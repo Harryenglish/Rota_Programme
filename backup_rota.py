@@ -366,20 +366,6 @@ class Scheduler:
                   least_assigned[day][period] = all_names_sorted[day_idx][period_idx]
               
           return least_assigned
-
-      def forward_checker(self, day, period):
-          '''
-          This method is in charge of looking into the future to prevent expensive unnecessary search spaces
-          '''                
-          remaining_shifts = [shift for shift in all_shifts[day][period] if not shift.assigned]
-          available_emps = [emp for emp in self.employees
-                            if self.employees[emp].can_work(day, period)]
-          
-          if len(available_emps) < len(remaining_shifts):
-              if len(available_emps) == 0:
-                  return False
-              return True
-          return True
       
       def backtracking(self, day):
           '''
@@ -394,6 +380,20 @@ class Scheduler:
                       self.shift.unassign(emp)
                       rota[day][period].remove({"employee": emp, "shift": shift})    
                       continue
+                  
+      def forward_checker(self, day, period):
+          '''
+          This method is in charge of looking into the future to prevent expensive unnecessary search spaces
+          '''                
+          remaining_shifts = [shift for shift in all_shifts[day][period] if not shift.assigned]
+          available_emps = [emp for emp in self.employees
+                            if self.employees[emp].can_work(day, period)]
+          
+          if len(available_emps) < len(remaining_shifts):
+              if len(available_emps) == 0:
+                  return False
+              return True
+          return True
           
       def rota_assigner(self):
           '''
@@ -419,7 +419,11 @@ class Scheduler:
                               assign_confirmed = True
                               break
                           if not assign_confirmed and not checkpoint:
-                              self.backtracking(day)
+                              self.employees[emp].unassign(day, period, shift)
+                              shift.unassign(emp)
+                              rota[day][period] = [entry for entry in rota[day][period] 
+                                                   if entry["employee"] != emp or entry["shift"] != shift]
+                              continue
                           
           return rota
       
@@ -496,10 +500,14 @@ class Scheduler:
 
 
 rota = Scheduler(employees, all_shifts)
-print(rota.export_rota_to_excel())
+print(rota.rota_assigner())
 
-#for emp in employees:
-#    test = employees[emp].assigned
-#    print(test)
 
-#print(all_shifts)
+
+
+
+
+# check forward checking, backtracking and assigner logic
+# add comments
+# export to excel 
+# do another test with new data
