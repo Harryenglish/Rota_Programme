@@ -366,11 +366,6 @@ class Scheduler:
                   least_assigned[day][period] = all_names_sorted[day_idx][period_idx]
               
           return least_assigned
-                  
-      def backtracking(self):
-          '''
-          This method is in charge of if any of the tests fail, this rebuilds the rota and makes it work !!!!!!!!
-          '''
 
       def forward_checker(self, day, period):
           '''
@@ -383,6 +378,13 @@ class Scheduler:
           if len(available_emps) < len(remaining_shifts):
               return False
           return True
+      
+      def backtracking(self, day, period, emp, shift):
+          '''
+          This method is in charge of if any of the tests fail, this rebuilds the rota and makes it work !!!!!!!!
+          '''
+          
+              
           
       def rota_assigner(self):
           '''
@@ -394,21 +396,25 @@ class Scheduler:
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
                                      
           for day in DAYS:
-              for period in self.least_assigned()[day]:
+              least_assigned_day = self.least_assigned()[day]
+              for period in least_assigned_day:
                   for shift in all_shifts[day][period]:
-                      for emp in self.least_assigned()[day][period]:  
-                          if self.employees[emp].can_work(day, period) and self.forward_checker(day, period):
+                      assign_confirmed = False
+                      for emp in least_assigned_day[period]:  
+                          if not self.employees[emp].can_work(day, period):
+                              continue                          
+                          if self.forward_checker(day, period):
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
                               rota[day][period].append({"employee": emp, "shift": shift})
+                              assign_confirmed = True
                               break
-                          else:
-                              self.backtracking()
+                          if not assign_confirmed:
+                              self.backtracking(day, period, emp, shift)
                           
           return rota
           
 
-             # might need to run least assigneed everytime someone is assigned to get a fresh list
                     
 
 # make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
