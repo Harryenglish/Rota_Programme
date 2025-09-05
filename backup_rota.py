@@ -292,7 +292,7 @@ class Scheduler:
             evening_count = 0
             for emp in employees:
                 if employees[emp].availability[(day, "Morning")] == True:
-                    morning_count += 1               
+                    morning_count += 1
                 if employees[emp].availability[(day, "Afternoon")] == True:
                     afternoon_count += 1
                 if employees[emp].availability[(day, "Afternoon")] == True:
@@ -372,10 +372,17 @@ class Scheduler:
           This method is in charge of if any of the tests fail, this rebuilds the rota and makes it work !!!!!!!!
           '''
 
-      def forward_checker(self):
+      def forward_checker(self, day, period):
           '''
           This method is in charge of looking into the future to prevent expensive unnecessary search spaces
-          '''
+          '''                
+          remaining_shifts = [shift for shift in all_shifts[day][period] if not shift.assigned]
+          available_emps = [emp for emp in self.employees
+                            if self.employees[emp].can_work(day, period)]
+          
+          if len(available_emps) < len(remaining_shifts):
+              return False
+          return True
           
       def rota_assigner(self):
           '''
@@ -385,13 +392,12 @@ class Scheduler:
           '''
 
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
-          least_assigned = self.least_assigned()
                                      
           for day in DAYS:
-              for period in least_assigned[day]:
+              for period in self.least_assigned()[day]:
                   for shift in all_shifts[day][period]:
-                      for emp in least_assigned[day][period]:  
-                          if self.employees[emp].can_work(day, period):
+                      for emp in self.least_assigned()[day][period]:  
+                          if self.employees[emp].can_work(day, period) and self.forward_checker(day, period):
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
                               rota[day][period].append({"employee": emp, "shift": shift})
@@ -402,7 +408,7 @@ class Scheduler:
           return rota
           
 
-             
+             # might need to run least assigneed everytime someone is assigned to get a fresh list
                     
 
 # make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
@@ -419,8 +425,8 @@ class Scheduler:
 
 
 
-#rota = Scheduler(employees, all_shifts)
-#print(rota.rota_assigner())
+rota = Scheduler(employees, all_shifts)
+print(rota.rota_assigner())
 
 #for emp in employees:
 #    test = employees[emp].assigned
