@@ -437,6 +437,46 @@ class Scheduler:
                         unassigned_dict[day][period] = unassigned
 
             return unassigned_dict
+      
+      def export_rota_to_excel(self, filename="rota.xlsx"):
+            # First, figure out all departments
+            rota = self.rota_assigner()
+
+            departments = set()
+            for day in rota:
+                for period in rota[day]:
+                    for item in rota[day][period]:
+                        departments.add(item["shift"].department)
+
+            # Create a dictionary of DataFrames per department
+            dept_sheets = {dept: [] for dept in departments}
+
+            for dept in departments:
+                for day in rota:
+                    for period in rota[day]:
+                        shifts = [item for item in rota[day][period] if item["shift"].department == departments]
+                        if shifts:
+                            for item in shifts:
+                                dept_sheets[dept].append({
+                                    "Day": day,
+                                    "Period": period,
+                                    "Employee": item["employee"],
+                                    "Shift Time": str(item["shift"])
+                                })
+                        else:
+                            # Optional: show unassigned shifts
+                            dept_sheets[dept].append({
+                                "Day": day,
+                                "Period": period,
+                                "Employee": "UNASSIGNED",
+                                "Shift Time": ""
+                            })
+
+            # Write to Excel
+            #with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+            #    for dept, data in dept_sheets.items():
+            #        df = pd.DataFrame(data)
+            #        df.to_excel(writer, sheet_name=dept[:31], index=False)
           
 
                     
@@ -456,7 +496,7 @@ class Scheduler:
 
 
 rota = Scheduler(employees, all_shifts)
-print(rota.get_unassigned_shifts())
+print(rota.export_rota_to_excel())
 
 #for emp in employees:
 #    test = employees[emp].assigned
