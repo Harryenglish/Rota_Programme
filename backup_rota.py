@@ -131,19 +131,6 @@ class Employee:
             "time_range": shift.time_range
         })
 
-    #def unassign(self, day, shift):
-    #    if day in self.assigned:
-    #        self.assigned[day] = [
-    #            s for s in self.assigned[day]
-    #            if not (
-    #                s["department"] == shift.department and
-    #                s["time_range"] == shift.time_range
-    #                s["period"] == shift.period and
-    #            )]
-    #        
-    #        if not self.assigned[day]:  
-    #            del self.assigned[day]            
-
     def __repr__(self):
         return f"Employee(Name = {self.name}, Availability = {self.availability})"
     
@@ -382,7 +369,12 @@ class Scheduler:
                   
       def backtracking(self):
           '''
-          This method is in charge of if any of the tests fail, this rebuilds the rota and hopefully it works !!!!!!!!
+          This method is in charge of if any of the tests fail, this rebuilds the rota and makes it work !!!!!!!!
+          '''
+
+      def forward_checker(self):
+          '''
+          This method is in charge of looking into the future to prevent expensive unnecessary search spaces
           '''
           
       def rota_assigner(self):
@@ -392,15 +384,13 @@ class Scheduler:
           Checks if someone is assigned on that period, if not assign and mark rest of day off
           '''
 
-          ### CHECK COMPATABILITY OF 'SHIFT' WITH ASSIGNED METHOD ###
-
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
           least_assigned = self.least_assigned()
                                      
           for day in DAYS:
-              for period in PERIODS:
+              for period in least_assigned[day]:
                   for shift in all_shifts[day][period]:
-                      for emp in least_assigned[day][period]:    # least assigned periods dont line up with periods we are assigning to 
+                      for emp in least_assigned[day][period]:  
                           if self.employees[emp].can_work(day, period):
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
@@ -420,10 +410,20 @@ class Scheduler:
 # build back tracker with correct logic
 # export
 
+# build forward checker
+# build back tracker
+# check assigner logic
 
 
 
 
 
-rota = Scheduler(employees, all_shifts)
-print(rota.rota_assigner())
+
+#rota = Scheduler(employees, all_shifts)
+#print(rota.rota_assigner())
+
+#for emp in employees:
+#    test = employees[emp].assigned
+#    print(test)
+
+#print(all_shifts)
