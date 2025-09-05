@@ -376,15 +376,24 @@ class Scheduler:
                             if self.employees[emp].can_work(day, period)]
           
           if len(available_emps) < len(remaining_shifts):
-              return False
+              if len(available_emps) == 0:
+                  return False
+              return True
           return True
       
-      def backtracking(self, day, period, emp, shift):
+      def backtracking(self, day):
           '''
           This method is in charge of if any of the tests fail, this rebuilds the rota and makes it work !!!!!!!!
           '''
-          
-              
+          least_assigned_day = self.least_assigned()[day]
+
+          for period in least_assigned_day:
+              for shift in all_shifts[day][period]:
+                  for emp in least_assigned_day[period]:
+                      self.employees[emp].unassign(day, period, shift)
+                      self.shift.unassign(emp)
+                      rota[day][period].remove({"employee": emp, "shift": shift})    
+                      continue
           
       def rota_assigner(self):
           '''
@@ -396,23 +405,38 @@ class Scheduler:
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
                                      
           for day in DAYS:
-              least_assigned_day = self.least_assigned()[day]
-              for period in least_assigned_day:
+              for period in self.least_assigned()[day]:
                   for shift in all_shifts[day][period]:
                       assign_confirmed = False
-                      for emp in least_assigned_day[period]:  
+                      for emp in self.least_assigned()[day][period]:  
                           if not self.employees[emp].can_work(day, period):
-                              continue                          
-                          if self.forward_checker(day, period):
+                              continue                         
+                          checkpoint = self.forward_checker(day, period) 
+                          if checkpoint:
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
                               rota[day][period].append({"employee": emp, "shift": shift})
                               assign_confirmed = True
                               break
-                          if not assign_confirmed:
-                              self.backtracking(day, period, emp, shift)
+                          if not assign_confirmed and not checkpoint:
+                              self.backtracking(day)
                           
           return rota
+      
+      def get_unassigned_shifts(self):
+            
+            rota = self.rota_assigner()
+            unassigned_dict = {day: {period: [] for period in PERIODS} for day in DAYS}
+
+            for day in DAYS:
+                for period in PERIODS:
+                    unassigned = [
+                        shift for shift in all_shifts[day][period]
+                        if not any(assignment['shift'] == shift for assignment in rota[day][period])]
+                    if unassigned:
+                        unassigned_dict[day][period] = unassigned
+
+            return unassigned_dict
           
 
                     
@@ -432,7 +456,7 @@ class Scheduler:
 
 
 rota = Scheduler(employees, all_shifts)
-print(rota.rota_assigner())
+print(rota.get_unassigned_shifts())
 
 #for emp in employees:
 #    test = employees[emp].assigned
