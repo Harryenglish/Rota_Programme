@@ -418,12 +418,13 @@ class Scheduler:
                               rota[day][period].append({"employee": emp, "shift": shift})
                               assign_confirmed = True
                               break
-                          if not assign_confirmed and not checkpoint:
-                              self.employees[emp].unassign(day, period, shift)
-                              shift.unassign(emp)
-                              rota[day][period] = [entry for entry in rota[day][period] 
-                                                   if entry["employee"] != emp or entry["shift"] != shift]
-                              continue
+                      if not assign_confirmed and not checkpoint:
+                          self.employees[emp].unassign(day, period, shift)
+                          shift.unassign(emp)
+                          
+                          rota[day][period] = []
+                              
+                          continue
                           
           return rota
       
@@ -501,6 +502,8 @@ class Scheduler:
 
 rota = Scheduler(employees, all_shifts)
 print(rota.rota_assigner())
+
+#print(rota.get_unassigned_shifts())
 
 
 
