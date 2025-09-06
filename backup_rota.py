@@ -484,20 +484,6 @@ class Scheduler:
             #        df.to_excel(writer, sheet_name=dept[:31], index=False)
           
 
-                    
-
-# make sure backtesting behaviour is sound, no infinite loops, breaking where appropriate
-# check rota assigner to make sure logic is sound, make sure each method talks to eachother correctly 
-# build back tracker with correct logic
-# export
-
-# build forward checker
-# build back tracker
-# check assigner logic
-
-
-
-
 
 
 rota = Scheduler(employees, all_shifts)
@@ -510,7 +496,19 @@ print(rota.rota_assigner())
 
 
 
-# check forward checking, backtracking and assigner logic
 # add comments
 # export to excel 
 # do another test with new data
+
+
+
+# for forward checking it will look ahead and see if there are enough eligible people in the remaining shifts of the remaining periods of the day 
+# (most contrained only fails if not enough available or lots of clopens)
+# if available people is less than number of shifts allow this to pass
+# if this shows there isnt we call backtracking
+# backtracking unassigns the most recent person in that period and assigns the next person
+# we keep a score of which regimes assign the most shifts just before backtracking gets called
+# if no full solution is found we present the one with the highest score
+
+# run forward checking before everyone is assigned
+# build get_unassigned_shifts into assigner to make score count of how succesfull a regime is 
