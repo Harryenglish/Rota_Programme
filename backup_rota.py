@@ -389,10 +389,11 @@ class Scheduler:
           available_emps = [emp for emp in self.employees
                             if self.employees[emp].can_work(day, period)]
           
-          if len(available_emps) < len(remaining_shifts):
-              if len(available_emps) == 0:
-                  return False
+          if len(self.least_assigned()[day][period]) < len(remaining_shifts):
               return True
+              
+          if len(self.least_assigned()[day][period]) >= len(remaining_shifts) and len(available_emps) < len(remaining_shifts):
+              return False
           return True
           
       def rota_assigner(self):
@@ -403,28 +404,37 @@ class Scheduler:
           '''
 
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
+          i = 0
+          emps = self.least_assigned()[day][period]
                                      
           for day in DAYS:
               for period in self.least_assigned()[day]:
                   for shift in all_shifts[day][period]:
                       assign_confirmed = False
-                      for emp in self.least_assigned()[day][period]:  
+                      for emp in emps:  
+                          
                           if not self.employees[emp].can_work(day, period):
                               continue                         
-                          checkpoint = self.forward_checker(day, period) 
-                          if checkpoint:
+                          
+                          if self.forward_checker(day, period):
                               self.employees[emp].assign(day, period, shift)
                               shift.assign(emp)
                               rota[day][period].append({"employee": emp, "shift": shift})
+                              i += 1
                               assign_confirmed = True
                               break
-                      if not assign_confirmed and not checkpoint:
-                          self.employees[emp].unassign(day, period, shift)
-                          shift.unassign(emp)
                           
-                          rota[day][period] = []
+                          if not assign_confirmed:
                               
-                          continue
+                              
+
+                      #if not assign_confirmed and not checkpoint:
+                      #    self.employees[emp].unassign(day, period, shift)
+                      #    shift.unassign(emp)
+                          
+                      #    rota[day][period] = []
+                              
+                            continue
                           
           return rota
       
@@ -443,46 +453,7 @@ class Scheduler:
 
             return unassigned_dict
       
-      def export_rota_to_excel(self, filename="rota.xlsx"):
-            # First, figure out all departments
-            rota = self.rota_assigner()
-
-            departments = set()
-            for day in rota:
-                for period in rota[day]:
-                    for item in rota[day][period]:
-                        departments.add(item["shift"].department)
-
-            # Create a dictionary of DataFrames per department
-            dept_sheets = {dept: [] for dept in departments}
-
-            for dept in departments:
-                for day in rota:
-                    for period in rota[day]:
-                        shifts = [item for item in rota[day][period] if item["shift"].department == departments]
-                        if shifts:
-                            for item in shifts:
-                                dept_sheets[dept].append({
-                                    "Day": day,
-                                    "Period": period,
-                                    "Employee": item["employee"],
-                                    "Shift Time": str(item["shift"])
-                                })
-                        else:
-                            # Optional: show unassigned shifts
-                            dept_sheets[dept].append({
-                                "Day": day,
-                                "Period": period,
-                                "Employee": "UNASSIGNED",
-                                "Shift Time": ""
-                            })
-
-            # Write to Excel
-            #with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-            #    for dept, data in dept_sheets.items():
-            #        df = pd.DataFrame(data)
-            #        df.to_excel(writer, sheet_name=dept[:31], index=False)
-          
+      
 
 
 
@@ -511,4 +482,10 @@ print(rota.rota_assigner())
 # if no full solution is found we present the one with the highest score
 
 # run forward checking before everyone is assigned
-# build get_unassigned_shifts into assigner to make score count of how succesfull a regime is 
+# build get_unassigned_shifts into assigner to make score count of how succesfull a regime is and build unassigned people
+
+# figure out how to go backwards in employee list
+# unassign previous person and assign next
+# implement forward checker for all remaining periods of the day not just current
+# the last perosn assigned, is tied to the last assigned shift, if we can access the index of the last assigned shift in that period
+# then we can get the name to unassign them from the conflicting shift
