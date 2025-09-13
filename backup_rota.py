@@ -405,13 +405,12 @@ class Scheduler:
 
           rota = {day: {period: [] for period in PERIODS} for day in DAYS}
           i = 0
-          emps = self.least_assigned()[day][period]
                                      
           for day in DAYS:
               for period in self.least_assigned()[day]:
                   for shift in all_shifts[day][period]:
                       assign_confirmed = False
-                      for emp in emps:  
+                      for emp in self.least_assigned()[day][period]:  
                           
                           if not self.employees[emp].can_work(day, period):
                               continue                         
@@ -425,15 +424,6 @@ class Scheduler:
                               break
                           
                           if not assign_confirmed:
-                              
-                              
-
-                      #if not assign_confirmed and not checkpoint:
-                      #    self.employees[emp].unassign(day, period, shift)
-                      #    shift.unassign(emp)
-                          
-                      #    rota[day][period] = []
-                              
                             continue
                           
           return rota
@@ -489,3 +479,13 @@ print(rota.rota_assigner())
 # implement forward checker for all remaining periods of the day not just current
 # the last perosn assigned, is tied to the last assigned shift, if we can access the index of the last assigned shift in that period
 # then we can get the name to unassign them from the conflicting shift
+
+
+# scheduele day by day
+# save a score of however many shifts each day gets
+# save the most optimal day
+# if a day fails, go back to previous day and try again with next person
+# if previous day fails, go back to the day before that and try again with next person
+# if we reach the start of the week again, we have failed to find a solution
+# we then present the most optimal day we found
+# if we reach the end of the week we have found a solution and present that
