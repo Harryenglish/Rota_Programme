@@ -448,18 +448,14 @@ class Scheduler:
 
 
 rota = Scheduler(employees, all_shifts)
-print(rota.rota_assigner())
+#print(rota.rota_assigner())
 
 #print(rota.get_unassigned_shifts())
 
-
-
-
-
-
+# check forward checking and backtracking
 # add comments
-# export to excel 
-# do another test with new data
+
+
 
 
 
@@ -471,21 +467,3 @@ print(rota.rota_assigner())
 # we keep a score of which regimes assign the most shifts just before backtracking gets called
 # if no full solution is found we present the one with the highest score
 
-# run forward checking before everyone is assigned
-# build get_unassigned_shifts into assigner to make score count of how succesfull a regime is and build unassigned people
-
-# figure out how to go backwards in employee list
-# unassign previous person and assign next
-# implement forward checker for all remaining periods of the day not just current
-# the last perosn assigned, is tied to the last assigned shift, if we can access the index of the last assigned shift in that period
-# then we can get the name to unassign them from the conflicting shift
-
-
-# scheduele day by day
-# save a score of however many shifts each day gets
-# save the most optimal day
-# if a day fails, go back to previous day and try again with next person
-# if previous day fails, go back to the day before that and try again with next person
-# if we reach the start of the week again, we have failed to find a solution
-# we then present the most optimal day we found
-# if we reach the end of the week we have found a solution and present that
