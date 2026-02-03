@@ -451,19 +451,3 @@ rota = Scheduler(employees, all_shifts)
 #print(rota.rota_assigner())
 
 #print(rota.get_unassigned_shifts())
-
-# check forward checking and backtracking
-# add comments
-
-
-
-
-
-# for forward checking it will look ahead and see if there are enough eligible people in the remaining shifts of the remaining periods of the day 
-# (most contrained only fails if not enough available or lots of clopens)
-# if available people is less than number of shifts allow this to pass
-# if this shows there isnt we call backtracking
-# backtracking unassigns the most recent person in that period and assigns the next person
-# we keep a score of which regimes assign the most shifts just before backtracking gets called
-# if no full solution is found we present the one with the highest score
-
